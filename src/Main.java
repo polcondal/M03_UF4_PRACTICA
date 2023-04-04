@@ -1,6 +1,5 @@
 import java.util.Scanner;
 
-import models.GenericProduct;
 import utils.Utilities;
 
 public class Main {

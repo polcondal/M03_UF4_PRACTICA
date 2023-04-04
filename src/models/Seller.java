@@ -4,28 +4,41 @@ import interfaces.UserAccount;
 
 import java.util.ArrayList;
 
-public class Seller implements UserAccount {
-    int sellerId;
-    String sellerName;
-    String loginPassword;
-    String loginName;
-    ArrayList <GenericProduct> sellerProducts;
+public class Seller extends User implements UserAccount {
+    private String storeName;
+    private ArrayList<GenericProduct> sellerProducts;
 
-    /*AddProduct();
-    DeleteProduct();
-    ModifyProduct();*/
-
-
-    public Seller(int sellerId, String sellerName, String loginPassword, String loginName, ArrayList<GenericProduct> sellerProducts) {
-        this.sellerId = sellerId;
-        this.sellerName = sellerName;
-        this.loginPassword = loginPassword;
-        this.loginName = loginName;
+    public Seller(int sellerId, String storeName, String loginPassword, String loginName,
+            ArrayList<GenericProduct> sellerProducts) {
+        super(sellerId, loginPassword, loginName);
+        this.storeName = storeName;
         this.sellerProducts = sellerProducts;
     }
-    public static void AddProduct (ArrayList <GenericProduct> sellerProducts){
+
+    public void AddProduct(ArrayList<GenericProduct> sellerProducts) {
+        // TODO implement here
     }
 
+    public void DeleteProduct(ArrayList<GenericProduct> sellerProducts) {
+        // TODO implement here
+    }
 
+    public void ModifyProduct(ArrayList<GenericProduct> sellerProducts) {
+        // TODO implement here
+    }
 
+    @Override
+    public void CreateAccount() {
+
+    }
+
+    @Override
+    public void RemoveAccount() {
+
+    }
+
+    @Override
+    public void ModifyAccount() {
+
+    }
 }

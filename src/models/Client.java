@@ -4,16 +4,17 @@ import interfaces.UserAccount;
 
 import java.util.ArrayList;
 
-public class Client implements UserAccount {
-    final int idClient;
-    int phoneNumber;
-    String email;
-    String address;
-    String loginName;
-    String loginPassword;
-    ArrayList <Order> clientOrders;
+public abstract class Client implements UserAccount {
+    private final int idClient;
+    private int phoneNumber;
+    private String email;
+    private String address;
+    private String loginName;
+    private String loginPassword;
+    private ArrayList<Order> clientOrders;
 
-    public Client(int idClient, int phoneNumber, String email, String address, String loginName, String loginPassword, ArrayList<Order> clientOrders) {
+    public Client(int idClient, int phoneNumber, String email, String address, String loginName, String loginPassword,
+            ArrayList<Order> clientOrders) {
         this.idClient = idClient;
         this.phoneNumber = phoneNumber;
         this.email = email;
@@ -23,5 +24,3 @@ public class Client implements UserAccount {
         this.clientOrders = clientOrders;
     }
 }
-
-
