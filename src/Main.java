@@ -1,14 +1,21 @@
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
+
+import models.*;
 import utils.Utilities;
 
 public class Main {
 
+    public static Shop shop;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        LoginMenu(scanner);
+        shop = new Shop();
+        entryMenu(scanner);
     }
 
-    private static void LoginMenu(Scanner scanner){
+    private static void entryMenu(Scanner scanner){
         int selection = Integer.MAX_VALUE;
 
         while(selection != 1){
@@ -19,14 +26,16 @@ public class Main {
                     break;
 
                 case 2: System.out.println("Log In");
-                    String email = Utilities.llegirParaula("Introduce tu email: ");
+                    String username = Utilities.llegirParaula("Introduce tu nombre de usuario: ");
                     String password = Utilities.llegirParaula("Introduce tu contraseña: ");
-                    //TODO: COMPROVAR A TRAVÉS DE RESEX QUE ES UN MAIL
-                    //TODO: COMPROVAR EXISTENCIA D'USUARI SEGONS ELS PARAMETRES PASSATS....
-                    IndividualMenu(scanner);
+                    //TODO: DETECTAR SI ES UN MAIL O NO
+                    //TODO: MIRAR SI EXISTE EL USUARIO, EN CASO QUE SI Y TENGA BIEN LA CONTRASEÑA PASAR AL MENU QUE LE PERTOCA SEGUN SU TIPO DE USER
+
+                    individualMenu(scanner); // TEST
                     break;
 
                 case 3: System.out.println("Sign Up");
+                    signUpSubMenu();
                     break;
 
                 default: selection = Integer.MAX_VALUE; break;
@@ -34,7 +43,34 @@ public class Main {
         }
     }
 
-    private static void IndividualMenu(Scanner scanner){
+    private static void signUpSubMenu(){
+        String username1 = Utilities.llegirParaula("Introduce tu nombre de usuario: ");
+        String password1 = Utilities.llegirParaula("Introduce tu contraseña: ");
+        String password2 = Utilities.llegirParaula("Repite tu contraseña: ");
+
+        while (!password2.equals(password1)){
+            System.out.println("Las dos contraseñas introducidas tienen que ser iguales, vuelve a repetir");
+            password1 = Utilities.llegirParaula("Introduce tu contraseña: ");
+            password2 = Utilities.llegirParaula("Repite tu contraseña: ");
+        }
+
+        int userType = Utilities.llegirInt("Que tipo de usuario eres? \n 1. Individual \n 2. Empresa \n 3. Proveedor", 1,3);
+        User newUser;
+        switch (userType){
+            // TODO: DATOS TEMPORALES, pedirlos antes por pantalla
+            // TODO: MIRAR SI REALMENTE ES UN MAIL Y QUE NO EXISTA YA EN LA LISTA DE USUARIOS
+            case 1: newUser = new Individual(666666666,"pepe@pepito.com", "papaprpaarparpa","pepe", "contra123", new ArrayList<Order>() , "ppepe pepepe ep", new Date(2002,10,29)); break;
+            case 2: newUser = new Enterprise(666666666,"pepe@pepito.com", "papaprpaarparpa","pepe", "contra123", new ArrayList<Order>() , "4213321312d","pepe palotes"); break;
+            case 3: newUser = new Supplier("papaprpaarparpa","contra123"); break;
+            default: newUser = null; break;
+        }
+        shop.addUser(newUser);
+        System.out.println("Felicidades, ya formas parte de nuestra familia!");
+    }
+
+
+    //TODO: FALTAN FUNCIONES A APLICAR
+    private static void individualMenu(Scanner scanner){
         int selection = Integer.MAX_VALUE;
 
         while(selection != 1){
@@ -48,7 +84,8 @@ public class Main {
         }
     }
 
-    private static void BusinessMenu(Scanner scanner){
+    //TODO: MODIFICAR INPUTS Y ACCIONES DE ESTOS MENUS, PRIMERO QUE FUNCIONE EN INDIVIDUAL
+    private static void businessMenu(Scanner scanner){
         int selection = Integer.MAX_VALUE;
 
         while(selection != 1){
@@ -62,7 +99,7 @@ public class Main {
         }
     }
 
-    private static void SupplierMenu(Scanner scanner){
+    private static void supplierMenu(Scanner scanner){
         int selection = Integer.MAX_VALUE;
 
         while(selection != 1){

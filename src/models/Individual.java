@@ -1,38 +1,33 @@
 package models;
 
 import interfaces.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class Individual extends Client implements ManageOrders, UserAccount {
     private String fullName;
-    private LocalDateTime birthDate;
-    private int points;
+    private Date birthDate;
 
-    public Individual(int idClient, int phoneNumber, String email, String address, String loginName,
-            String loginPassword, ArrayList<Order> clientOrders, String fullName, LocalDateTime birthDate, int points) {
-        super(idClient, phoneNumber, email, address, loginName, loginPassword, clientOrders);
+    public Individual(int phoneNumber, String email, String address, String loginName,
+                      String loginPassword, ArrayList<Order> clientOrders, String fullName, Date birthDate) {
+        super(phoneNumber, email, address, loginName, loginPassword, clientOrders);
         this.fullName = fullName;
         this.birthDate = birthDate;
-        this.points = points;
-    }
-
-    public int getPoints() {
-        return this.points;
     }
 
     @Override
-    public void CreateAccount() {
+    public void createAccount() {
 
     }
 
     @Override
-    public void RemoveAccount() {
+    public void removeAccount() {
 
     }
 
     @Override
-    public void ModifyAccount() {
+    public void modifyAccount() {
 
     }
 }

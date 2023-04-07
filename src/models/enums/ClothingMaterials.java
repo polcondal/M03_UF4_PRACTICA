@@ -1,6 +1,5 @@
 package models.enums;
 
 public enum ClothingMaterials {
-    Denim, Cotton, Polyester, Nylon, Spandex, Wool, Linen, Leather, Fur, Rayon, Polyester_Blend, Acrylic, Silk,
-    Cashmere, Modal
+    DENIM, COTTON, POLYESTER, NYLON, SPANDEX, WOOL, LINEN, LEATHER, FUR, RAYON, POLYESTER_BLEND, ACRYLIC, SILK, CASHMERE, MODAL
 }
