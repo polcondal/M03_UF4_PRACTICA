@@ -39,11 +39,11 @@ public class Shop {
     }
     //endregion
 
-    //region Setters and getters UserList
+    //region Setters and getters models.UserList
     public ArrayList<User> getUserList(){
         return userList;
     }
-    public User getUserById(String id){
+    public User getUserById(int id){
         for(int i = 0; i<userList.size(); i++){
             if(userList.get(i).getUserId() == id){
                 return userList.get(i);
@@ -59,7 +59,7 @@ public class Shop {
         }
         return null;
     }
-    public void setUserById(String id, User newUser){
+    public void setUserById(int id, User newUser){
         for(int i = 0; i<userList.size(); i++){
             if(userList.get(i).getUserId() == id){
                 userList.set(i, newUser);

@@ -2,20 +2,21 @@ package models;
 
 public abstract class User {
 
-    private static String userId ;
+    private static int userId = 0;
     private String username;
     private String password;
 
+
     public User(String userName, String loginPassword) {
-        this.userId += 1;
         this.username = userName;
         this.password = loginPassword;
+        userId ++;
     }
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
