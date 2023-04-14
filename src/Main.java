@@ -72,8 +72,8 @@ public class Main {
             }
         } while (newUser != null);
 
-        String password1 = "";
-        String password2 = "";
+        String password1;
+        String password2;
         do {
             password1 = Utilities.leerPalabra("Introduce tu contraseña: ");
             password2 = Utilities.leerPalabra("Repite tu contraseña: ");
