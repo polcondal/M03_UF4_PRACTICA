@@ -28,9 +28,10 @@ public class Individual extends Client implements ManageOrders, UserAccount {
     }
 
     @Override
-    public void removeAccount() {
-
+    public void removeAccount(UserList userList) {
+        super.removeAccount(userList);
     }
+
 
     @Override
     public void modifyAccount() {

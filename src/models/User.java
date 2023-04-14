@@ -6,7 +6,6 @@ public abstract class User {
     private String username;
     private String password;
 
-
     public User(String userName, String loginPassword) {
         this.username = userName;
         this.password = loginPassword;
@@ -15,9 +14,6 @@ public abstract class User {
 
     public int getUserId() {
         return userId;
-    }
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public String getUsername() {
@@ -35,5 +31,8 @@ public abstract class User {
     }
 
 
+    public void removeAccount(UserList userList) {
+        userList.removeUser(this);
+    }
 
 }

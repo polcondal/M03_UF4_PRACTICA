@@ -18,6 +18,19 @@ public class UserList {
         return false;
     }
 
+    public boolean isPasswordCorrect(String password, User user){
+        return user.getPassword().equals(password);
+    }
+
+    public User getUserByUsername(String username) {
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
     public void addUser(User user) {
         users.add(user);
     }

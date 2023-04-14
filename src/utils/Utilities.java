@@ -31,10 +31,10 @@ public final class Utilities {
                 if(numero >= minValue && numero <= maxValue) {
                     correcte = true;
                 }else{
-                    System.out.printf("El numero ha d'estar entre %d i %d\n", minValue,maxValue);
+                    System.out.printf("El numero ha de ser uno entre %d i %d\n", minValue,maxValue);
                 }
             }else{
-                System.out.println("Has de introduïr un numero!!");
+                System.out.println("Introduce un número");
             }
             leer.nextLine();
         }

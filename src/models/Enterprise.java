@@ -22,15 +22,38 @@ public class Enterprise extends Client implements ManageOrders, UserAccount {
 
     }
 
-
     @Override
-    public void removeAccount() {
-
+    public void removeAccount(UserList userList) {
+        super.removeAccount(userList);
     }
+
 
     @Override
     public void modifyAccount() {
 
+    }
+
+    public void userMenu() {
+        System.out.println("Bienvenido al menú de Empresa " + this.getUsername());
+        System.out.println("1. Ver mis datos");
+        System.out.println("2. Modificar mis datos");
+        System.out.println("3. Eliminar mi cuenta");
+        System.out.println("4. Salir");
+        int option = Utilities.leerInt("Introduce una opción: ", 1, 4);
+        switch (option) {
+            case 1:
+                System.out.println(this.toString());
+                break;
+            case 2:
+                this.modifyAccount();
+                break;
+            case 3:
+
+                break;
+            case 4:
+                System.out.println("Saliendo...");
+                break;
+        }
     }
 
     @Override

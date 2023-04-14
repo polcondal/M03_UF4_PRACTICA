@@ -1,4 +1,3 @@
-import java.util.Scanner;
 
 import models.*;
 import utils.Utilities;
@@ -8,13 +7,13 @@ public class Main {
     public static UserList userList;
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         userList = new UserList();
-        entryMenu(scanner);
+        entryMenu();
     }
 
-    private static void entryMenu(Scanner scanner) {
+    private static void entryMenu() {
         byte selection = 0;
+        User user = null;
 
         while (selection != 1) {
             System.out.println("・・・・・・・・・・・・・・❥✿ BIENVENIDE ❥✿・・・・・・・・・・・・・・");
@@ -26,27 +25,31 @@ public class Main {
             switch (selection) {
                 case 1:
                     System.out.println("---------- Menu de Log In ----------");
-                    String username;
-                    boolean userExists = false;
+
+
                     do {
-                        username = Utilities.leerPalabra("Introduce tu nombre de usuario: ");
-                        if (!userExists) {
+                        String username = Utilities.leerPalabra("Introduce tu nombre de usuario: ");
+                        user = userList.getUserByUsername(username);
+                        if (user == null) {
                             System.out.println("El usuario introducido no existe, vuelve a introducirlo");
                         }
-                    } while (!userList.doesUserExist(username));
+                    } while (user == null);
 
-                    String password = Utilities.leerPalabra("Introduce tu contraseña: ");
-                    // TODO: DETECTAR SI ES UN MAIL O NO
-                    // TODO: MIRAR SI EXISTE EL USUARIO, EN CASO QUE SI Y TENGA BIEN LA CONTRASEÑA
-                    // PASAR AL MENU QUE LE PERTOCA SEGUN SU TIPO DE USER
+                    String password;
+                    do {
+                        password = Utilities.leerPalabra("Introduce tu contraseña: ");
+                        if (!userList.isPasswordCorrect(password, user)) {
+                            System.out.println("La contraseña introducida no es correcta, vuelve a introducirla");
+                        }
+                    } while (!userList.isPasswordCorrect(password, user));
 
-                    individualMenu(scanner); // TEST
+                    // TODO: IMPLEMENTAR MENUS AFTER LOGIN
                     break;
 
                 case 2:
                     System.out.println("Ya existen " + userList.countUsers() + " usuarios registrados, a qué esperas?...");
                     System.out.println("---------- Menú de registro ----------");
-                    signUpSubMenu();
+                    signUpSubMenu(user);
                     break;
 
                 case 3:
@@ -54,23 +57,20 @@ public class Main {
                     break;
 
                 default:
-                    selection = 0;
                     break;
             }
         }
     }
 
-    private static void signUpSubMenu() {
+    private static void signUpSubMenu(User newUser) {
         String username;
-
-        boolean userExists = false;
         do {
             username = Utilities.leerPalabra("Introduce tu nombre de usuario: ");
-            userExists =  userList.doesUserExist(username);
-            if (userExists) {
+            newUser = userList.getUserByUsername(username);
+            if (newUser != null) {
                 System.out.println("El usuario introducido ya existe, vuelve a introducirlo");
             }
-        } while (userExists);
+        } while (newUser != null);
 
         String password1 = "";
         String password2 = "";
@@ -85,8 +85,8 @@ public class Main {
         int userType = Utilities.leerInt("Que tipo de usuario eres? \n 1. Individual \n 2. Empresa \n 3. Proveedor",
                 1, 3);
 
-        // declaramos el usuario genérico y lo inicializamos según el tipo de usuario
-        User newUser;
+        // inicializamos el usuario genérico según el tipo de usuario que sea
+
         switch (userType) {
             // individual
             case 1:
@@ -97,7 +97,7 @@ public class Main {
             // empresa
             case 2:
                 //TODO: TEST
-                // el cif se le pide al instante de crear cuenta ya que no se puede modificar
+                //el cif se le pide al instante de crear cuenta ya que no se puede modificar
                 final String CIF = Utilities.leerPalabra("Introduce tu CIF: \n" +
                         "ADVERTENCIA: EL CIF NO SE PUEDE MODIFICAR DESPUES DE CREAR LA CUENTA", 9);
                 newUser = new Enterprise(username, password1, CIF);
@@ -105,19 +105,25 @@ public class Main {
                 break;
             // proveedor
             case 3:
-                //TODO: IMPLEMENT
-                newUser = new Supplier("papaprpaarparpa", "contra123");
+                //TODO: TEST
+                newUser = new Supplier(username, password1);
+                ((Supplier)newUser).createAccount();
                 break;
             default:
-                newUser = null;
                 break;
         }
         addUserToList(newUser);
-        System.out.println("Felicidades!!! " + newUser.getUsername()+ ", ya formas parte de nuestra familia!");
+        System.out.println("Felicidades!!! " + newUser.getUsername()+ ", ya formas parte de nuestra familia como " + newUser.getClass().getSimpleName() + "!");
+
+        System.out.println("\n Quieres utilizar la cuenta que acabas de crear? \n 1. Sí \n 2. No");
+        int selection = Utilities.leerInt("Introduce una opción: ", 1, 2);
+        if (selection == 1) {
+            loadUserMenu(newUser);
+        }
     }
 
     // TODO: FALTAN FUNCIONES A APLICAR
-    private static void individualMenu(Scanner scanner) {
+    private static void individualMenu() {
         byte selection = 0;
 
         while (selection != 1) {
@@ -143,7 +149,7 @@ public class Main {
 
     // TODO: MODIFICAR INPUTS Y ACCIONES DE ESTOS MENUS, PRIMERO QUE FUNCIONE EN
     // INDIVIDUAL
-    private static void businessMenu(Scanner scanner) {
+    private static void businessMenu() {
         byte selection = 0;
 
         while (selection != 1) {
@@ -165,7 +171,7 @@ public class Main {
         }
     }
 
-    private static void supplierMenu(Scanner scanner) {
+    private static void supplierMenu() {
         int selection = Integer.MAX_VALUE;
 
         while (selection != 1) {
@@ -187,8 +193,12 @@ public class Main {
         }
     }
 
+    private static void loadUserMenu(User user){
+
+    }
+
     private static void addUserToList(User user) {
-        System.out.println("Añadiendo usuario "+ user +  " a la base de datos...");
+        System.out.println("Añadiendo usuario "+ user.toString() +  " a la base de datos...");
         userList.addUser(user);
     }
 }
