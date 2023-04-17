@@ -1,6 +1,6 @@
-
 import models.*;
-import utils.Utilities;
+import utils.Utilities as SalleUtils;
+
 
 public class Main {
 
@@ -15,9 +15,9 @@ public class Main {
         byte selection = 0;
         User user = null;
 
-        while (selection != 1) {
+        while (selection != 3) {
             System.out.println("・・・・・・・・・・・・・・❥✿ BIENVENIDE ❥✿・・・・・・・・・・・・・・");
-            selection = (byte)Utilities.leerInt("Dispones de cuenta?: \n" +
+            selection = (byte)SalleUtils.leerInt("Dispones de cuenta?: \n" +
                             " 1. Sí, Log In  \n" +
                             " 2. No, Sign Up \n" +
                     " 3. Salir \n",
@@ -28,7 +28,7 @@ public class Main {
 
 
                     do {
-                        String username = Utilities.leerPalabra("Introduce tu nombre de usuario: ");
+                        String username = SalleUtils.leerPalabra("Introduce tu nombre de usuario: ");
                         user = userList.getUserByUsername(username);
                         if (user == null) {
                             System.out.println("El usuario introducido no existe, vuelve a introducirlo");
@@ -37,7 +37,7 @@ public class Main {
 
                     String password;
                     do {
-                        password = Utilities.leerPalabra("Introduce tu contraseña: ");
+                        password = SalleUtils.leerPalabra("Introduce tu contraseña: ");
                         if (!userList.isPasswordCorrect(password, user)) {
                             System.out.println("La contraseña introducida no es correcta, vuelve a introducirla");
                         }
@@ -65,7 +65,7 @@ public class Main {
     private static void signUpSubMenu(User newUser) {
         String username;
         do {
-            username = Utilities.leerPalabra("Introduce tu nombre de usuario: ");
+            username = SalleUtils.leerPalabra("Introduce tu nombre de usuario: ");
             newUser = userList.getUserByUsername(username);
             if (newUser != null) {
                 System.out.println("El usuario introducido ya existe, vuelve a introducirlo");
@@ -75,14 +75,14 @@ public class Main {
         String password1 = "";
         String password2 = "";
         do {
-            password1 = Utilities.leerPalabra("Introduce tu contraseña: ");
-            password2 = Utilities.leerPalabra("Repite tu contraseña: ");
+            password1 = SalleUtils.leerPalabra("Introduce tu contraseña: ");
+            password2 = SalleUtils.leerPalabra("Repite tu contraseña: ");
             if (!password2.equals(password1)) {
                 System.out.println("Las dos contraseñas introducidas tienen que ser iguales, vuelve a repetir");
             }
         } while (!password2.equals(password1));
 
-        int userType = Utilities.leerInt("Que tipo de usuario eres? \n 1. Individual \n 2. Empresa \n 3. Proveedor",
+        int userType = SalleUtils.leerInt("Que tipo de usuario eres? \n 1. Individual \n 2. Empresa \n 3. Proveedor",
                 1, 3);
 
         // inicializamos el usuario genérico según el tipo de usuario que sea
@@ -98,7 +98,7 @@ public class Main {
             case 2:
                 //TODO: TEST
                 //el cif se le pide al instante de crear cuenta ya que no se puede modificar
-                final String CIF = Utilities.leerPalabra("Introduce tu CIF: \n" +
+                final String CIF = SalleUtils.leerPalabra("Introduce tu CIF: \n" +
                         "ADVERTENCIA: EL CIF NO SE PUEDE MODIFICAR DESPUES DE CREAR LA CUENTA", 9);
                 newUser = new Enterprise(username, password1, CIF);
                 ((Enterprise)newUser).createAccount();
@@ -116,7 +116,7 @@ public class Main {
         System.out.println("Felicidades!!! " + newUser.getUsername()+ ", ya formas parte de nuestra familia como " + newUser.getClass().getSimpleName() + "!");
 
         System.out.println("\n Quieres utilizar la cuenta que acabas de crear? \n 1. Sí \n 2. No");
-        int selection = Utilities.leerInt("Introduce una opción: ", 1, 2);
+        int selection = SalleUtils.leerInt("Introduce una opción: ", 1, 2);
         if (selection == 1) {
             loadUserMenu(newUser);
         }
@@ -127,7 +127,7 @@ public class Main {
         byte selection = 0;
 
         while (selection != 1) {
-            selection = (byte)Utilities.leerInt(
+            selection = (byte) SalleUtils.leerInt(
                     "Elige una de las siguientes opciones: \n 1. Salir de la sesion \n 2. Listar productos \n 3. Comprar producto \n 4. Modificar usuario",
                     1, 5);
             switch (selection) {
@@ -154,7 +154,7 @@ public class Main {
 
         while (selection != 1) {
             System.out.println("・・・・・・・・・・・・・・❥✿ BIENVENIDE ❥✿・・・・・・・・・・・・・・");
-            selection = (byte)Utilities.leerInt(
+            selection = (byte)SalleUtils.leerInt(
                     "Elige una de las siguientes opciones: \n 1. Log in cliente \n 2. Log in empresa \n 3. Log in vendedor",
                     1, 5);
             switch (selection) {
@@ -176,7 +176,7 @@ public class Main {
 
         while (selection != 1) {
             System.out.println("・・・・・・・・・・・・・・❥✿ BIENVENIDE ❥✿・・・・・・・・・・・・・・");
-            selection = Utilities.leerInt(
+            selection = SalleUtils.leerInt(
                     "Elige una de las siguientes opciones: \n 1. Log in cliente \n 2. Log in empresa \n 3. Log in vendedor",
                     1, 5);
             switch (selection) {
