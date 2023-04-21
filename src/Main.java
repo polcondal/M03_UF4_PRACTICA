@@ -1,6 +1,6 @@
-
 import models.*;
 import utils.Utilities;
+
 
 public class Main {
 
@@ -15,7 +15,7 @@ public class Main {
         byte selection = 0;
         User user = null;
 
-        while (selection != 1) {
+        while (selection != 3) {
             System.out.println("・・・・・・・・・・・・・・❥✿ BIENVENIDE ❥✿・・・・・・・・・・・・・・");
             selection = (byte)Utilities.leerInt("Dispones de cuenta?: \n" +
                             " 1. Sí, Log In  \n" +
@@ -127,7 +127,7 @@ public class Main {
         byte selection = 0;
 
         while (selection != 1) {
-            selection = (byte)Utilities.leerInt(
+            selection = (byte) Utilities.leerInt(
                     "Elige una de las siguientes opciones: \n 1. Salir de la sesion \n 2. Listar productos \n 3. Comprar producto \n 4. Modificar usuario",
                     1, 5);
             switch (selection) {
