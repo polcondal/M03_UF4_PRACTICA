@@ -2,7 +2,6 @@ package models;
 
 import interfaces.UserAccount;
 import utils.Utilities;
-import models.UserList;
 
 import java.util.ArrayList;
 
@@ -13,6 +12,11 @@ public abstract class Client extends User implements UserAccount{
     private String email;
     private String address;
     private ArrayList<Order> clientOrders;
+
+    //constructor directo
+    public Client(String username, String password, ArrayList<Order> clientOrders) {
+        super(username, password);
+    }
 
     public Client(String username, String password) {
         super(username, password);

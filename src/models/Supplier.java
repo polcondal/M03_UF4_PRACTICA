@@ -9,21 +9,21 @@ import utils.Utilities;
 public class Supplier extends User implements UserAccount {
     private String supplierName;
     private ArrayList<Shop> supplierShops = new ArrayList<Shop>();
-    private ArrayList<GenericProduct> supplierProducts = new ArrayList<GenericProduct>();
 
+    //Constructor directo defaultData
+    public Supplier(String userName, String loginPassword, String supplierName, ArrayList<Shop> supplierShops) {
+        super(userName, loginPassword);
+        this.supplierName = supplierName;
+    }
 
-    // TODO: TODO
-    // QUE NO TENGA UNA LISTA DE PRODUCTOS, PERO QUE SEA EL UNICO QUE TENGA PERMISOS PARA AÑADIR PRODUCTOS A LA TIENDA DESDE EL MENU
     public Supplier(String userName, String loginPassword) {
         super(userName, loginPassword);
     }
 
     @Override
     public void createAccount() {
-        //TODO: IMPLEMENTAR
         this.supplierName = Utilities.leerFrase("Introduce el nombre de proveedor: ", 3);
     }
-
 
     @Override
     public void modifyAccount() {
@@ -31,20 +31,23 @@ public class Supplier extends User implements UserAccount {
                 "1. Nombre de usuario" + "\n" +
                 "2. Contraseña" + "\n" +
                 "3. Nombre de la empresa" + "\n" +
-                "4. Log Out");
+                "4. Volver");
         int option = Utilities.leerInt("Introduce una opción: ", 1, 7);
         switch (option) {
             case 1:
                 this.setUsername(Utilities.leerFrase("Introduce el nuevo nombre de usuario: ", 3));
+                System.out.println("Nombre de usuario cambiado correctamente a " + this.getUsername());
                 break;
             case 2:
-                this.tryChangePassword();
+                this.ChangePassword();
+                System.out.println("Contraseña cambiada correctamente");
                 break;
             case 3:
                 this.supplierName = Utilities.leerFrase("Introduce el nuevo nombre de la empresa: ", 8);
+                System.out.println("Nombre de la empresa cambiado correctamente a " + this.supplierName);
                 break;
             case 4:
-                System.out.println("Saliendo de la sesión...");
+                System.out.println("Volviendo...");
                 break;
         }
     }
@@ -59,33 +62,31 @@ public class Supplier extends User implements UserAccount {
     }
 
     public void userMenu() {
-        int opcio = Utilities.leerInt("BEINVENIDE AL MENÚ SUPPLIER \n Elige una opción: " + "\n" +
-                " 1. Menú de productos " + "\n" +
-                " 2. Menú de Tiendas" + "\n" +
-                " 3. Modificar Cuenta " + "\n" +
-                " 4. Eliminar Cuenta" + "\n" +
-                " 5. Log Out",
-                1, 5);
+        int opcio = Utilities.leerInt("BEINVENIDE AL MENÚ SUPPLIER " + this.supplierName +
+                        "\n Elige una opción: " + "\n" +
+                        " 1. Menú de Tiendas" + "\n" +
+                        " 2. Modificar Cuenta " + "\n" +
+                        " 3. Eliminar Cuenta" + "\n" +
+                        " 4. Log Out",
+                1, 4);
 
         switch (opcio) {
             case 1:
-                System.out.println("Menú de productos");
-                this.listarProductos();
-                break;
-            case 2:
                 System.out.println("Menú de Tiendas");
                 shopMenu();
-
                 break;
-            case 3:
-                System.out.println("");
+            case 2:
                 this.modifyAccount();
                 break;
-            case 4:
-                System.out.println("Eliminar Cuenta");
-                this.removeAccount();
+            case 3:
+                boolean succesful = this.tryRemoveAccount();
+                if (succesful)
+                { System.out.println("Cuenta "+ this.getUsername() +" eliminada correctamente");
+                    return; } else {
+                    System.out.println("No se ha eliminado la cuenta");
+                }
                 break;
-            case 5:
+            case 4:
                 System.out.println("Saliendo de la sesión...");
                 return;
 
@@ -94,12 +95,15 @@ public class Supplier extends User implements UserAccount {
     }
 
     private void shopMenu() {
-        int opcio = Utilities.leerInt("BEINVENIDE AL MENÚ DE TIENDAS \n Elige una opción: " + "\n" +
-                " 1. Añadir Tienda " + "\n" +
-                " 2. Eliminar Tienda" + "\n" +
-                " 3. Modificar Tienda" + "\n" +
-                " 4. Listar Tiendas" + "\n" +
-                " 5. Volver al menú principal",
+        boolean salir = false;
+        int opcio = Utilities.leerInt("BEINVENIDE AL MENÚ DE TIENDAS, " + this.supplierName + "\n" +
+                "Actualmente hay " + supplierShops.size() + " tiendas a tu nombre \n" +
+                        " \n Elige una opción: " + "\n" +
+                        " 1. Añadir Tienda " + "\n" +
+                        " 2. Eliminar Tienda" + "\n" +
+                        " 3. Gestionar Tienda" + "\n" +
+                        " 4. Listar Tiendas" + "\n" +
+                        " 5. Volver al menú principal",
                 1, 5);
         Shop shop = null;
         switch (opcio) {
@@ -107,18 +111,31 @@ public class Supplier extends User implements UserAccount {
                 System.out.println("Añadir Tienda");
                 String shopName = Utilities.leerPalabra("Introduce el nombre de la tienda: ", 3);
 
-                supplierShops.add(new Shop(shopName));
-                shop = supplierShops.get(supplierShops.size() - 1);
+                this.supplierShops.add(new Shop(shopName));
+                shop = this.supplierShops.get(this.supplierShops.size() - 1);
                 System.out.println("Tienda " + shop.getShopName() + " añadida correctamente");
                 break;
             case 2:
-                System.out.println("Eliminar Tienda");
-                supplierShops.remove(Utilities.leerInt("Introduce el número de la tienda que quieres eliminar: ", 1, supplierShops.size()));
+                if (this.supplierShops.size() == 0) {
+                    System.out.println("No hay tiendas que eliminar, crea una antes de eliminarla");
+                    break;
+                } else {
+                    System.out.println("Eliminar Tienda");
+                    this.listarTiendas();
+                    this.supplierShops.remove(Utilities.leerInt("Introduce el número de la tienda que quieres eliminar: ", 0, supplierShops.size() - 1));
+                    salir = true;
+                }
+
                 break;
             case 3:
-                System.out.println("Gestionar Tienda");
-                shop = supplierShops.get(Utilities.leerInt("Introduce el número de la tienda que quieres modificar: ", 1, supplierShops.size()));
-                shop.shopMenu();
+                if (this.supplierShops.size() == 0) {
+                    System.out.println("No hay tiendas que gestionar, crea una antes de gestionarla");
+                    break;
+                } else {
+                    this.listarTiendas();
+                }
+                shop = this.supplierShops.get(Utilities.leerInt("Introduce el número de la tienda que quieres modificar: ", 0, supplierShops.size() - 1));
+                shop.shopSubMenu();
                 break;
             case 4:
                 System.out.println("Listar Tiendas");
@@ -128,21 +145,15 @@ public class Supplier extends User implements UserAccount {
                 System.out.println("Volver al menú de Supplier");
                 return;
         }
-        this.shopMenu();
+        if (!salir){
+            this.shopMenu();
+
+        }
     }
 
 
-    private void listarProductos() {
-        int counter = 0;
-        for (GenericProduct product : this.supplierProducts) {
-            {
-                counter++;
-                System.out.println(counter++);
-                System.out.println(product);
-
-            }
-        }
-
+    public void addShop(Shop shop) {
+        this.supplierShops.add(shop);
     }
 
     private void listarTiendas() {
@@ -150,11 +161,11 @@ public class Supplier extends User implements UserAccount {
         for (Shop shop : this.supplierShops) {
             {
                 counter++;
-                System.out.println(counter++);
-                System.out.println(shop);
+                System.out.println(counter++ + ". " + shop.toString());
 
             }
         }
 
     }
+
 }

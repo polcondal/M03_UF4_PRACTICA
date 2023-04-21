@@ -3,14 +3,16 @@ import  utils.Utilities;
 
 public abstract class User {
 
-    private static int userId = 0;
+    private static int userIdCounter = 0;
+    private int userId;
     private String username;
     private String password;
 
     public User(String userName, String loginPassword) {
+        userIdCounter++;
+        this.userId = userIdCounter;
         this.username = userName;
         this.password = loginPassword;
-        userId ++;
     }
 
     public int getUserId() {
@@ -32,7 +34,7 @@ public abstract class User {
     }
 
 
-    public boolean tryChangePassword() {
+    public void ChangePassword() {
         String oldPassword;
         do {
             oldPassword = Utilities.leerPalabra("Introduce la contraseña actual: ");
@@ -48,15 +50,16 @@ public abstract class User {
         } while (newPassword.equals(oldPassword));
 
         setPassword(newPassword);
-        return true;
     }
 
-    public void removeAccount() {
+    public boolean tryRemoveAccount() {
         boolean isSure = Utilities.leerBoolean("¿Estás seguro de que quieres eliminar tu cuenta?");
         if (isSure) {
             UserList.removeUser(this);
+            //retornamos true para saber que si ha sido eliminado
+            return true;
         }
-        else return;
+        else return false;
     }
 
 }

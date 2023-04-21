@@ -1,10 +1,15 @@
 import models.*;
+import models.enums.*;
 import utils.Utilities;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 
 public class Main {
 
     public static void main(String[] args) {
+        addDefaultData();
         entryMenu();
     }
 
@@ -204,6 +209,71 @@ public class Main {
                 ((Supplier)user).userMenu();
                 break;
         }
+    }
+
+    private static void addDefaultData(){
+
+        ProductList.addProduct(new Clothing("Default Supplier S.A", "Camiseta de manga corta", 10.99f, 200, "N/A", ClothingMaterials.POLYESTER, ClothingSizes.M));
+        ProductList.addProduct(new Technology("Default Supplier S.A", "Portatil ThinkPad x56", 556.59f, 5,"Lenovo", 218741121));
+        ProductList.addProduct(new Edible("Default Supplier S.A", "Manzana", 0.75f, 100, "Hacendado",  EdibleCategory.FRUIT));
+        ProductList.addProduct(new Clothing("Default Supplier S.A", "Camiseta de manga larga", 12.99f, 200, "N/A", ClothingMaterials.COTTON, ClothingSizes.L));
+        ProductList.addProduct(new Technology("Default Supplier S.A", "Asus Rog Strix G", 899.99f, 2,"Asus", 213015812));
+
+
+
+
+        //
+        ArrayList<Order> individualUnoOrders = new ArrayList<Order>();
+        individualUnoOrders.add(new Order(null, LocalDate.now(), LocalDate.of(2023, 5, 1)));
+        ArrayList<Order> individualDosOrders = new ArrayList<Order>();
+
+
+
+        UserList.addUser(new Individual("Pepe123", "1234", "pepe perez", LocalDate.of(1920,01,31), 617111252, "pepe@gmail.com", "calle falsa 123", individualUnoOrders));
+
+        UserList.addUser(new Individual("Pepe123", "1234", "pepe perez", LocalDate.of(1920,01,31), 617111252, "pepe@gmail.com", "calle falsa 123", individualUnoOrders));
+
+
+        ArrayList<Order> EnterpriseUnoOrders = new ArrayList<Order>();
+        UserList.addUser(new Enterprise("HolaSA", "1234", "54577432", "EmpresasHolaSA", 617111252, "empresa1@mail.com", "calle falsa 123", EnterpriseUnoOrders));
+
+
+        // SUPPLIER MERCADONA ------------------------
+        // declaramos los arrays de tiendas y pedidos
+        ArrayList<Shop> mercadonaShops = new ArrayList<Shop>();
+        ArrayList<Order> mercadonaOrders = new ArrayList<Order>();
+
+        //pedido 1
+        ArrayList<GenericProduct> order1Products = new ArrayList<GenericProduct>();
+        order1Products.add(new Edible("Mercadona", "Huevos", 1.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
+        order1Products.add(new Edible("Mercadona", "Leche", 0.69f, 125, "Hacendado",  EdibleCategory.DAIRY));
+
+        //pedido 2
+        ArrayList<GenericProduct> order2Products = new ArrayList<GenericProduct>();
+        order2Products.add(new Edible("Mercadona", "Yogur", 0.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
+        order2Products.add(new Edible("Mercadona", "Queso", 1.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
+        order2Products.add(new Edible("Mercadona", "Leche", 0.69f, 125, "Hacendado",  EdibleCategory.DAIRY));
+
+        //declaracion de pedidos
+        Order mercadonaOrder1 = new Order( order1Products, LocalDate.now(), LocalDate.of(2023, 5, 1));
+        Order mercadonaOrder2 = new Order( order2Products, LocalDate.now(), LocalDate.of(2023, 5, 1));
+
+        // declaramos el array de productos de la tienda
+        ArrayList<GenericProduct> mercadonaBCNProducts = new ArrayList<GenericProduct>();
+
+        //declaramos la tienda con sus productos
+        Shop mercadonaBCN = new Shop("Mercadona BCN", mercadonaOrders,  mercadonaBCNProducts);
+        mercadonaBCN.addProduct(new Edible("Mercadona", "Huevos", 1.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
+        mercadonaBCN.addProduct(new Edible("Mercadona", "Leche", 0.69f, 125, "Hacendado",  EdibleCategory.DAIRY));
+        mercadonaBCN.addProduct(new Edible("Mercadona", "Yogur", 0.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
+        mercadonaBCN.addProduct(new Edible("Mercadona", "Queso", 1.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
+        mercadonaShops.add(mercadonaBCN);
+
+        //creamos el usuario y añadimos la tienda a la lista de tiendas del supplier
+        User mercadonaUser = new Supplier("mercadonaadmin", "1234", "Mercadona", mercadonaShops);
+        UserList.addUser(mercadonaUser);
+        ((Supplier)mercadonaUser).addShop(mercadonaBCN);
+
     }
 
     private static void addUserToList(User user) {

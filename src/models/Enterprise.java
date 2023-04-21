@@ -3,10 +3,21 @@ package models;
 import interfaces.*;
 import utils.Utilities;
 
+import java.util.ArrayList;
+
 public class Enterprise extends Client implements UserAccount{
     final private String cif;
     private String enterpriseName;
 
+    public Enterprise(String username, String password, String cif, String enterpriseName, int phoneNumber, String email, String address, ArrayList<Order> enterpriseOrders){
+        super(username, password, enterpriseOrders);
+        this.cif = cif;
+        this.enterpriseName = enterpriseName;
+        this.setPhoneNumber(phoneNumber);
+        this.setEmail(email);
+        this.setAddress(address);
+
+    };
     public Enterprise(String username, String password, String cif){
         super(username, password);
         this.setUsername(username);
@@ -39,7 +50,7 @@ public class Enterprise extends Client implements UserAccount{
                 this.setUsername(Utilities.leerFrase("Introduce el nuevo nombre de usuario: ", 3));
                 break;
             case 2:
-                this.tryChangePassword();
+                this.ChangePassword();
                 break;
             case 3:
                 this.enterpriseName = Utilities.leerFrase("Introduce el nuevo nombre de la empresa: ", 8);
@@ -75,7 +86,7 @@ public class Enterprise extends Client implements UserAccount{
                 this.modifyAccount();
                 break;
             case 3:
-                removeAccount();
+                tryRemoveAccount();
                 break;
             case 4:
                 this.showOrders();

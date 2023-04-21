@@ -1,17 +1,19 @@
 package models;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Order {
-    private static int orderId;
+    private static int orderIdCounter = 0;
+    private int orderId;
     private ArrayList<GenericProduct> products;
-    private Date orderCreationDate;
-    private Date orderArrivalDate;
+    private LocalDate orderCreationDate;
+    private LocalDate orderArrivalDate;
 
-    public Order(ArrayList<GenericProduct> products, Date orderCreationDate,
-                 Date orderArrivalDate) {
-        orderId++;
+    public Order(ArrayList<GenericProduct> products, LocalDate orderCreationDate,
+                 LocalDate orderArrivalDate) {
+        orderIdCounter++;
+        this.orderId = orderIdCounter;
         this.products = products;
         this.orderCreationDate = orderCreationDate;
         this.orderArrivalDate = orderArrivalDate;
@@ -31,20 +33,36 @@ public class Order {
         this.products = products;
     }
 
-    public Date getOrderCreationDate() {
+    public LocalDate getOrderCreationDate() {
         return orderCreationDate;
     }
-    public void setOrderCreationDate(Date orderCreationDate) {
+    public void setOrderCreationDate(LocalDate orderCreationDate) {
         this.orderCreationDate = orderCreationDate;
     }
 
-    public Date getOrderArrivalDate() {
+    public LocalDate getOrderArrivalDate() {
         return orderArrivalDate;
     }
-    public void setOrderArrivalDate(Date orderArrivalDate) {
+    public void setOrderArrivalDate(LocalDate orderArrivalDate) {
         this.orderArrivalDate = orderArrivalDate;
     }
 
+    @Override
+    public String toString() {
+
+        String products = "";
+        for (GenericProduct genericProduct : this.products) {
+            products += genericProduct.toString() + ", ";
+        }
+
+
+        return "Order{" +
+                "orderId=" + orderId +
+                ", products=" + products +
+                ", orderCreationDate=" + orderCreationDate +
+                ", orderArrivalDate=" + orderArrivalDate +
+                '}';
+    }
 
 
 }

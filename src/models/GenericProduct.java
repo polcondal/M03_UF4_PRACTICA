@@ -1,16 +1,18 @@
 package models;
 
 public abstract class GenericProduct {
+    private static int productIdCounter = 0;
     private int productId;
-    private int sellerId;
+    private String supplierName;
     private String productName;
     private float price;
     private int stock;
     private String brand;
 
-    public GenericProduct(int productId, int sellerId, String productName, float price, int stock, String brand) {
-        this.productId = productId;
-        this.sellerId = sellerId;
+    public GenericProduct(String supplierName, String productName, float price, int stock, String brand) {
+        productIdCounter++;
+        this.productId = productIdCounter;
+        this.supplierName = supplierName;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
@@ -25,11 +27,11 @@ public abstract class GenericProduct {
         this.productId = productId;
     }
 
-    public int getSellerId() {
-        return sellerId;
+    public String getSupplierName() {
+        return supplierName;
     }
-    public void setSellerId(int sellerId) {
-        this.sellerId = sellerId;
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
     }
 
     public String getProductName() {
@@ -58,6 +60,18 @@ public abstract class GenericProduct {
     }
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    @Override
+    public String toString() {
+        return "GenericProduct{" +
+                "productId=" + productId +
+                ", supplierName='" + supplierName + '\'' +
+                ", productName='" + productName + '\'' +
+                ", price=" + price +
+                ", stock=" + stock +
+                ", brand='" + brand + '\'' +
+                '}';
     }
 
 

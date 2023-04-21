@@ -8,13 +8,21 @@ public class Shop {
     private ArrayList<Order> orderList;
     private ArrayList<GenericProduct> productList;
 
+    //constructor directo defaultData
+    public Shop( String shopName, ArrayList<Order> orderList, ArrayList<GenericProduct> productList){
+        this.shopName = shopName;
+        this.orderList = orderList;
+        this.productList = productList;
+    }
+
+    //constructor para el usuario
     public Shop(String shopName){
         this.shopName = shopName;
         orderList = new ArrayList<Order>();
         productList = new ArrayList<GenericProduct>();
     }
 
-    public void shopMenu(){
+    public void shopSubMenu(){
         System.out.println("Welcome to " + shopName + "!" + "\n" +
                 "1. Gestionar Productos \n" +
                 "2. Gestionar Pedidos \n" +
@@ -47,20 +55,17 @@ public class Shop {
                         break;
                     case 2:
                         System.out.println("Eliminar Pedido");
-                        orderList.remove(Utilities.leerInt("Introduce el ID del pedido: ", 1, orderList.size()));
+                        listarPedidos();
+                        this.orderList.remove(Utilities.leerInt("Introduce el ID del pedido: ", 1, orderList.size()));
                         break;
                     case 3:
                         System.out.println("Listar Pedidos");
-                        for(int i = 0; i<orderList.size(); i++){
-                            System.out.println("Pedido " + (i+1) + ": " + orderList.get(i));
-                        }
+                        listarPedidos();
                         break;
                     case 4:
                         System.out.println("Volver");
                         break;
                 }
-
-
                 break;
             case 3:
                 System.out.println("Saliendo de la tienda" + shopName + "...");
@@ -69,13 +74,19 @@ public class Shop {
 
     }
 
+    private void listarPedidos(){
+        for (Order order : orderList) {
+            System.out.println(order.toString());
+        }
+    }
+
     public ArrayList<Order> getOrderList(){
         return orderList;
     }
     public Order getOrderById(int id){
-        for(int i = 0; i<orderList.size(); i++){
-            if(orderList.get(i).getOrderId() == id){
-                return orderList.get(i);
+        for (Order order : orderList) {
+            if (order.getOrderId() == id) {
+                return order;
             }
         }
         return null;
@@ -95,9 +106,9 @@ public class Shop {
         return productList;
     }
     public GenericProduct getProductById(int id){
-        for(int i = 0; i<productList.size(); i++){
-            if(productList.get(i).getProductId() == id){
-                return productList.get(i);
+        for (GenericProduct genericProduct : productList) {
+            if (genericProduct.getProductId() == id) {
+                return genericProduct;
             }
         }
         return null;
@@ -120,5 +131,24 @@ public class Shop {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
+    }
+
+    @Override
+    public String toString() {
+        int orderCount = 0;
+        for (Order order : orderList) {
+            orderCount++;
+        }
+
+        int productCount = 0;
+        for (GenericProduct genericProduct : productList) {
+            productCount++;
+        }
+
+        return "Shop{" +
+                "shopName='" + shopName + '\'' +
+                ", orderCount=" + orderCount +
+                ", productCount=" + productCount +
+                '}';
     }
 }

@@ -1,10 +1,9 @@
 package models;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import interfaces.*;
 import utils.Utilities;
-import models.UserList;
-
 
 public class Individual extends Client implements UserAccount {
     private String fullName;
@@ -12,6 +11,14 @@ public class Individual extends Client implements UserAccount {
 
     public Individual(String username, String password){
         super(username, password);
+    };
+    public Individual(String username, String password, String fullName, LocalDate birthDate, int phoneNumber, String email, String address, ArrayList<Order> clientOrders){
+        super(username, password, clientOrders);
+        this.fullName = fullName;
+        this.birthDate = birthDate;
+        this.setPhoneNumber(phoneNumber);
+        this.setEmail(email);
+        this.setAddress(address);
     };
 
 
@@ -47,7 +54,7 @@ public class Individual extends Client implements UserAccount {
                     this.showOrders();
                     break;
                 case 4:
-                    this.removeAccount();
+                    this.tryRemoveAccount();
                 case 5:
                     System.out.println("Saliendo...");
                     break;
@@ -72,7 +79,7 @@ public class Individual extends Client implements UserAccount {
                 this.setUsername(Utilities.leerFrase("Introduce el nuevo nombre de usuario: ", 3));
                 break;
             case 2:
-                this.tryChangePassword();
+                this.ChangePassword();
                 break;
             case 3:
                 this.fullName = Utilities.leerFrase("Introduce el nuevo nombre completo: ", 8);
