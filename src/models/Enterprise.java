@@ -3,7 +3,7 @@ package models;
 import interfaces.*;
 import utils.Utilities;
 
-public class Enterprise extends Client implements ManageOrders, UserAccount {
+public class Enterprise extends Client implements UserAccount{
     final private String cif;
     private String enterpriseName;
 
@@ -22,15 +22,41 @@ public class Enterprise extends Client implements ManageOrders, UserAccount {
 
     }
 
-    @Override
-    public void removeAccount(UserList userList) {
-        super.removeAccount(userList);
-    }
-
 
     @Override
     public void modifyAccount() {
-
+        System.out.println("¿Qué quieres modificar de tu cuenta de Enterprise?" + "\n" +
+                "1. Nombre de usuario" + "\n" +
+                "2. Contraseña" + "\n" +
+                "3. Nombre de la empresa" + "\n" +
+                "4. Email" + "\n" +
+                "5. Dirección" + "\n" +
+                "6. Teléfono" + "\n" +
+                "7. Salir");
+        int option = Utilities.leerInt("Introduce una opción: ", 1, 7);
+        switch (option) {
+            case 1:
+                this.setUsername(Utilities.leerFrase("Introduce el nuevo nombre de usuario: ", 3));
+                break;
+            case 2:
+                this.tryChangePassword();
+                break;
+            case 3:
+                this.enterpriseName = Utilities.leerFrase("Introduce el nuevo nombre de la empresa: ", 8);
+                break;
+            case 4:
+                this.setEmail(Utilities.leerFrase("Introduce el nuevo email: ", 8));
+                break;
+            case 5:
+                this.setAddress(Utilities.leerFrase("Introduce la nueva dirección: ", 8));
+                break;
+            case 6:
+                this.setPhoneNumber(Utilities.leerInt("Introduce el nuevo teléfono: ", 100000000, 999999999));
+                break;
+            case 7:
+                System.out.println("Saliendo de la sesión...");
+                break;
+        }
     }
 
     public void userMenu() {
@@ -38,7 +64,8 @@ public class Enterprise extends Client implements ManageOrders, UserAccount {
         System.out.println("1. Ver mis datos");
         System.out.println("2. Modificar mis datos");
         System.out.println("3. Eliminar mi cuenta");
-        System.out.println("4. Salir");
+        System.out.println("4. Ver mis orders");
+        System.out.println("5. Salir");
         int option = Utilities.leerInt("Introduce una opción: ", 1, 4);
         switch (option) {
             case 1:
@@ -48,9 +75,12 @@ public class Enterprise extends Client implements ManageOrders, UserAccount {
                 this.modifyAccount();
                 break;
             case 3:
-
+                removeAccount();
                 break;
             case 4:
+                this.showOrders();
+                break;
+            case 5:
                 System.out.println("Saliendo...");
                 break;
         }

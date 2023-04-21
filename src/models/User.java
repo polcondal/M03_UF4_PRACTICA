@@ -1,4 +1,5 @@
 package models;
+import  utils.Utilities;
 
 public abstract class User {
 
@@ -31,8 +32,31 @@ public abstract class User {
     }
 
 
-    public void removeAccount(UserList userList) {
-        userList.removeUser(this);
+    public boolean tryChangePassword() {
+        String oldPassword;
+        do {
+            oldPassword = Utilities.leerPalabra("Introduce la contraseña actual: ");
+            if (!oldPassword.equals(this.password))
+                System.out.println("Contraseña incorrecta.");
+        } while (!oldPassword.equals(this.password));
+
+        String newPassword;
+        do {
+            newPassword = Utilities.leerPalabra("Introduce la nueva contraseña: ");
+            if (newPassword.equals(oldPassword))
+                System.out.println("La nueva contraseña no puede ser igual a la anterior.");
+        } while (newPassword.equals(oldPassword));
+
+        setPassword(newPassword);
+        return true;
+    }
+
+    public void removeAccount() {
+        boolean isSure = Utilities.leerBoolean("¿Estás seguro de que quieres eliminar tu cuenta?");
+        if (isSure) {
+            UserList.removeUser(this);
+        }
+        else return;
     }
 
 }

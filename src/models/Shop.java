@@ -1,21 +1,74 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.List;
+import utils.Utilities;
 
 public class Shop {
+    private String shopName;
     private ArrayList<Order> orderList;
-    private ArrayList<User> userList;
     private ArrayList<GenericProduct> productList;
 
-    public Shop(){
+    public Shop(String shopName){
+        this.shopName = shopName;
         orderList = new ArrayList<Order>();
-        userList = new ArrayList<User>();
         productList = new ArrayList<GenericProduct>();
+    }
+
+    public void shopMenu(){
+        System.out.println("Welcome to " + shopName + "!" + "\n" +
+                "1. Gestionar Productos \n" +
+                "2. Gestionar Pedidos \n" +
+                "3. Volver");
+        int option = Utilities.leerInt("Introduce una opción: ", 1, 3);
+        int suboption = 0;
+        switch (option){
+            case 1:
+                System.out.println("Gestionar Productos");
+                System.out.println("1. Añadir Producto \n" +
+                        "2. Eliminar Producto \n" +
+                        "3. Listar Productos \n" +
+                        "4. Volver");
+                suboption = Utilities.leerInt("Introduce una opción: ", 1, 4);
+                break;
+            case 2:
+                System.out.println("Gestionar Pedidos");
+                System.out.println("1. Añadir Pedido \n" +
+                        "2. Eliminar Pedido \n" +
+                        "3. Listar Pedidos \n" +
+                        "4. Volver");
+                suboption = Utilities.leerInt("Introduce una opción: ", 1, 4);
+
+                switch (suboption){
+                    case 1:
+                        System.out.println("Añadir Pedido");
+                        int productId = Utilities.leerInt("Introduce el ID del producto: ", 1, productList.size());
+                        int quantity = Utilities.leerInt("Introduce la cantidad: ", 1, 100);
+                        // orderList.add(new Order(quantity));
+                        break;
+                    case 2:
+                        System.out.println("Eliminar Pedido");
+                        orderList.remove(Utilities.leerInt("Introduce el ID del pedido: ", 1, orderList.size()));
+                        break;
+                    case 3:
+                        System.out.println("Listar Pedidos");
+                        for(int i = 0; i<orderList.size(); i++){
+                            System.out.println("Pedido " + (i+1) + ": " + orderList.get(i));
+                        }
+                        break;
+                    case 4:
+                        System.out.println("Volver");
+                        break;
+                }
+
+
+                break;
+            case 3:
+                System.out.println("Saliendo de la tienda" + shopName + "...");
+                break;
+        }
 
     }
 
-    //region Setters and getters OrderList
     public ArrayList<Order> getOrderList(){
         return orderList;
     }
@@ -37,42 +90,7 @@ public class Shop {
     public void addOrder(Order order){
         orderList.add(order);
     }
-    //endregion
 
-    //region Setters and getters models.UserList
-    public ArrayList<User> getUserList(){
-        return userList;
-    }
-    public User getUserById(int id){
-        for(int i = 0; i<userList.size(); i++){
-            if(userList.get(i).getUserId() == id){
-                return userList.get(i);
-            }
-        }
-        return null;
-    }
-    public User getUserByUsername(String username){
-        for(int i = 0; i<userList.size(); i++){
-            if(userList.get(i).getUsername() == username){
-                return userList.get(i);
-            }
-        }
-        return null;
-    }
-    public void setUserById(int id, User newUser){
-        for(int i = 0; i<userList.size(); i++){
-            if(userList.get(i).getUserId() == id){
-                userList.set(i, newUser);
-            }
-        }
-    }
-    public void addUser(User user){
-        userList.add(user);
-    }
-
-    //endregion
-
-    //region Setters and getters ProductList
     public ArrayList<GenericProduct> getProductList(){
         return productList;
     }
@@ -94,7 +112,13 @@ public class Shop {
     public void addProduct(GenericProduct product){
         productList.add(product);
     }
-    //endregion
 
 
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
 }

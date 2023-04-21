@@ -2,7 +2,10 @@ package models;
 
 import interfaces.UserAccount;
 import utils.Utilities;
+import models.UserList;
+
 import java.util.ArrayList;
+
 
 
 public abstract class Client extends User implements UserAccount{
@@ -24,6 +27,7 @@ public abstract class Client extends User implements UserAccount{
     }
     //email
     public void setEmail(String email) {
+
         this.email = email;
     }
     public String getEmail() {
@@ -58,4 +62,5 @@ public abstract class Client extends User implements UserAccount{
     public void modifyAccount() {
 
     }
+
 }

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Order {
-    private int orderId;
+    private static int orderId;
     private ArrayList<GenericProduct> products;
     private Date orderCreationDate;
     private Date orderArrivalDate;
 
-    public Order(int orderId, ArrayList<GenericProduct> products, Date orderCreationDate,
+    public Order(ArrayList<GenericProduct> products, Date orderCreationDate,
                  Date orderArrivalDate) {
-        this.orderId = orderId;
+        orderId++;
         this.products = products;
         this.orderCreationDate = orderCreationDate;
         this.orderArrivalDate = orderArrivalDate;

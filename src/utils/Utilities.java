@@ -141,4 +141,27 @@ public final class Utilities {
         return mail;
     }
 
+    public static boolean leerBoolean(String text) {
+        boolean bool = false, tipusCorrecte = false;
+        char opcioChar;
+
+        System.out.println(text + " | Escribe 'S' o 'N'");
+        do {
+            bool = leer.hasNextBoolean();
+            opcioChar = leer.next().charAt(0);
+            if (opcioChar == 'N' || opcioChar == 'n'
+            ) {
+                tipusCorrecte = true;
+                bool = false;
+            } else if (opcioChar == 'S' || opcioChar == 's') {
+                tipusCorrecte = true;
+                bool = true;
+            } else {
+                System.out.println("ERROR, Escriu 'S' o 'N");
+                tipusCorrecte = false;
+            }
+        } while (!tipusCorrecte);
+        return bool;
+    }
+
 }

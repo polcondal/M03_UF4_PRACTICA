@@ -4,10 +4,7 @@ import utils.Utilities;
 
 public class Main {
 
-    public static UserList userList;
-
     public static void main(String[] args) {
-        userList = new UserList();
         entryMenu();
     }
 
@@ -29,7 +26,7 @@ public class Main {
 
                     do {
                         String username = Utilities.leerPalabra("Introduce tu nombre de usuario: ");
-                        user = userList.getUserByUsername(username);
+                        user = UserList.getUserByUsername(username);
                         if (user == null) {
                             System.out.println("El usuario introducido no existe, vuelve a introducirlo");
                         }
@@ -38,16 +35,18 @@ public class Main {
                     String password;
                     do {
                         password = Utilities.leerPalabra("Introduce tu contraseña: ");
-                        if (!userList.isPasswordCorrect(password, user)) {
+                        if (!UserList.isPasswordCorrect(password, user)) {
                             System.out.println("La contraseña introducida no es correcta, vuelve a introducirla");
                         }
-                    } while (!userList.isPasswordCorrect(password, user));
+                    } while (!UserList.isPasswordCorrect(password, user));
 
                     // TODO: IMPLEMENTAR MENUS AFTER LOGIN
+                    System.out.println("Logeado correctamente");
+                    loadUserMenu(user);
                     break;
 
                 case 2:
-                    System.out.println("Ya existen " + userList.countUsers() + " usuarios registrados, a qué esperas?...");
+                    System.out.println("Ya existen " + UserList.countUsers() + " usuarios registrados, a qué esperas?...");
                     System.out.println("---------- Menú de registro ----------");
                     signUpSubMenu(user);
                     break;
@@ -66,7 +65,7 @@ public class Main {
         String username;
         do {
             username = Utilities.leerPalabra("Introduce tu nombre de usuario: ");
-            newUser = userList.getUserByUsername(username);
+            newUser = UserList.getUserByUsername(username);
             if (newUser != null) {
                 System.out.println("El usuario introducido ya existe, vuelve a introducirlo");
             }
@@ -194,11 +193,21 @@ public class Main {
     }
 
     private static void loadUserMenu(User user){
-
+        switch (user.getClass().getSimpleName()){
+            case "Individual":
+                ((Individual)user).userMenu();
+                break;
+            case "Enterprise":
+                ((Enterprise)user).userMenu();
+                break;
+            case "Supplier":
+                ((Supplier)user).userMenu();
+                break;
+        }
     }
 
     private static void addUserToList(User user) {
         System.out.println("Añadiendo usuario "+ user.toString() +  " a la base de datos...");
-        userList.addUser(user);
+        UserList.addUser(user);
     }
 }

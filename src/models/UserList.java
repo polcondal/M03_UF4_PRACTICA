@@ -1,11 +1,13 @@
 package models;
 
+import utils.Utilities;
+
 import java.util.ArrayList;
 
 public class UserList {
-    private ArrayList<User> users;
+    private static ArrayList<User> users = new ArrayList<>();
 
-    public ArrayList<User> getUsers() {
+    public ArrayList<User> getUsersArrayList() {
         return users;
     }
 
@@ -18,11 +20,21 @@ public class UserList {
         return false;
     }
 
-    public boolean isPasswordCorrect(String password, User user){
+    public static boolean doesUserExist(String username, String email) {
+        for (User user : users) {
+            //TEST
+            if (user instanceof Client && user.getUsername().equals(username) && ((Client) user).getEmail().equals(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isPasswordCorrect(String password, User user) {
         return user.getPassword().equals(password);
     }
 
-    public User getUserByUsername(String username) {
+    public static User getUserByUsername(String username) {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
                 return user;
@@ -31,20 +43,16 @@ public class UserList {
         return null;
     }
 
-    public void addUser(User user) {
+    public static void addUser(User user) {
         users.add(user);
     }
 
-    public void removeUser(User user) {
+    public static void removeUser(User user) {
         users.remove(user);
     }
 
-    public int countUsers() {
+    public static int countUsers() {
         return users.size();
     }
-
-    public UserList() {
-        users = new ArrayList<User>();
-    }
-
 }
+
