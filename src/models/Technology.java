@@ -1,13 +1,9 @@
 package models;
 
 public class Technology extends GenericProduct {
-    private String model;
     private String serialNumber;
-
-    public Technology(int productId, int sellerId, String productName, float price, int stock, String brand,
-            String model, String serialNumber) {
-        super(productId, sellerId, productName, price, stock, brand);
-        this.model = model;
+    public Technology(String supplierName, String productName, float price, int stock, String brand, String serialNumber) {
+        super(supplierName, productName, price, stock, brand);
         this.serialNumber = serialNumber;
     }
 }

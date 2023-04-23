@@ -1,21 +1,62 @@
 package models;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Order {
+    private static int orderIdCounter = 0;
     private int orderId;
-    private ArrayList<GenericProduct> products;
-    private Date orderCreationDate;
-    private Date orderArrivalDate;
+    private GenericProduct products;
+    private LocalDate orderCreationDate;
+    private LocalDate orderArrivalDate;
 
-    public Order(int orderId, ArrayList<GenericProduct> products, Date orderCreationDate,
-                 Date orderArrivalDate) {
-        this.orderId = orderId;
+    public Order(GenericProduct products, LocalDate orderCreationDate,
+                 LocalDate orderArrivalDate) {
+        orderIdCounter++;
+        this.orderId = orderIdCounter;
         this.products = products;
         this.orderCreationDate = orderCreationDate;
         this.orderArrivalDate = orderArrivalDate;
     }
+
+    public int getOrderId() {
+        return orderId;
+    }
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public GenericProduct getProducts() {
+        return products;
+    }
+    public void setProducts(GenericProduct products) {
+        this.products = products;
+    }
+
+    public LocalDate getOrderCreationDate() {
+        return orderCreationDate;
+    }
+    public void setOrderCreationDate(LocalDate orderCreationDate) {
+        this.orderCreationDate = orderCreationDate;
+    }
+
+    public LocalDate getOrderArrivalDate() {
+        return orderArrivalDate;
+    }
+    public void setOrderArrivalDate(LocalDate orderArrivalDate) {
+        this.orderArrivalDate = orderArrivalDate;
+    }
+
+    @Override
+    public String toString() {
+
+        return "Order{" +
+                "orderId=" + orderId +
+                ", products=" + products +
+                ", orderCreationDate=" + orderCreationDate +
+                ", orderArrivalDate=" + orderArrivalDate +
+                '}';
+    }
+
+
 }

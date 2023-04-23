@@ -1,38 +1,49 @@
 package models;
 
-import interfaces.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import utils.Utilities;
 
-public class Individual extends Client implements ManageOrders, UserAccount {
+public class Individual extends Client {
     private String fullName;
-    private LocalDateTime birthDate;
-    private int points;
+    private LocalDate birthDate;
 
-    public Individual(int idClient, int phoneNumber, String email, String address, String loginName,
-            String loginPassword, ArrayList<Order> clientOrders, String fullName, LocalDateTime birthDate, int points) {
-        super(idClient, phoneNumber, email, address, loginName, loginPassword, clientOrders);
+    public Individual(String username, String password, String fullName, LocalDate birthDate, int phoneNumber, String email, String address, ArrayList<Order> clientOrders){
+        super(username, password, clientOrders);
         this.fullName = fullName;
         this.birthDate = birthDate;
-        this.points = points;
+        this.setPhoneNumber(phoneNumber);
+        this.setEmail(email);
+        this.setAddress(address);
+        clientOrders = new ArrayList<>();
+    };
+
+    public String getFullName() {
+        return fullName;
     }
 
-    public int getPoints() {
-        return this.points;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 
     @Override
-    public void CreateAccount() {
-
-    }
-
-    @Override
-    public void RemoveAccount() {
-
-    }
-
-    @Override
-    public void ModifyAccount() {
-
+    public String toString() {
+        return "Individual [" +
+                "userId='" + this.getUserId() + '\'' +
+                ", username='" + this.getUsername() + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", birthDate=" + birthDate +
+                ", email='" + this.getEmail() + '\'' +
+                ", address='" + this.getAddress() + '\'' +
+                ", phoneNumber='" + this.getPhoneNumber() + '\'' +
+                ']';
     }
 }
