@@ -1,22 +1,22 @@
 package models;
+import  utils.Utilities;
 
 public abstract class User {
 
-    private static String userId ;
+    private static int userIdCounter = 0;
+    private int userId;
     private String username;
     private String password;
 
     public User(String userName, String loginPassword) {
-        this.userId += 1;
+        userIdCounter++;
+        this.userId = userIdCounter;
         this.username = userName;
         this.password = loginPassword;
     }
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
-    }
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getUsername() {
@@ -34,5 +34,32 @@ public abstract class User {
     }
 
 
+    public void ChangePassword() {
+        String oldPassword;
+        do {
+            oldPassword = Utilities.leerPalabra("Introduce la contraseña actual: ");
+            if (!oldPassword.equals(this.password))
+                System.out.println("Contraseña incorrecta.");
+        } while (!oldPassword.equals(this.password));
+
+        String newPassword;
+        do {
+            newPassword = Utilities.leerPalabra("Introduce la nueva contraseña: ");
+            if (newPassword.equals(oldPassword))
+                System.out.println("La nueva contraseña no puede ser igual a la anterior.");
+        } while (newPassword.equals(oldPassword));
+
+        setPassword(newPassword);
+    }
+
+    public boolean tryRemoveAccount() {
+        boolean isSure = Utilities.leerBoolean("¿Estás seguro de que quieres eliminar tu cuenta?");
+        if (isSure) {
+            UserList.removeUser(this);
+            //retornamos true para saber que si ha sido eliminado
+            return true;
+        }
+        else return false;
+    }
 
 }

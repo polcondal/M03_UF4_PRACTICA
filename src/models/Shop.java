@@ -1,28 +1,92 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.List;
+import utils.Utilities;
 
 public class Shop {
+    private String shopName;
     private ArrayList<Order> orderList;
-    private ArrayList<User> userList;
     private ArrayList<GenericProduct> productList;
 
-    public Shop(){
+    //constructor directo defaultData
+    public Shop( String shopName, ArrayList<Order> orderList, ArrayList<GenericProduct> productList){
+        this.shopName = shopName;
+        this.orderList = orderList;
+        this.productList = productList;
+    }
+
+    //constructor para el usuario
+    public Shop(String shopName){
+        this.shopName = shopName;
         orderList = new ArrayList<Order>();
-        userList = new ArrayList<User>();
         productList = new ArrayList<GenericProduct>();
+    }
+
+    public void shopSubMenu(){
+        System.out.println("Welcome to " + shopName + "!" + "\n" +
+                "1. Gestionar Productos \n" +
+                "2. Gestionar Pedidos \n" +
+                "3. Volver");
+        int option = Utilities.leerInt("Introduce una opción: ", 1, 3);
+        int suboption = 0;
+        switch (option){
+            case 1:
+                System.out.println("Gestionar Productos");
+                System.out.println("1. Añadir Producto \n" +
+                        "2. Eliminar Producto \n" +
+                        "3. Listar Productos \n" +
+                        "4. Volver");
+                suboption = Utilities.leerInt("Introduce una opción: ", 1, 4);
+                break;
+            case 2:
+                System.out.println("Gestionar Pedidos");
+                System.out.println("1. Añadir Pedido \n" +
+                        "2. Eliminar Pedido \n" +
+                        "3. Listar Pedidos \n" +
+                        "4. Volver");
+                suboption = Utilities.leerInt("Introduce una opción: ", 1, 4);
+
+                switch (suboption){
+                    case 1:
+                        System.out.println("Añadir Pedido");
+                        int productId = Utilities.leerInt("Introduce el ID del producto: ", 1, productList.size());
+                        int quantity = Utilities.leerInt("Introduce la cantidad: ", 1, 100);
+                        // orderList.add(new Order(quantity));
+                        break;
+                    case 2:
+                        System.out.println("Eliminar Pedido");
+                        listarPedidos();
+                        this.orderList.remove(Utilities.leerInt("Introduce el ID del pedido: ", 1, orderList.size()));
+                        break;
+                    case 3:
+                        System.out.println("Listar Pedidos");
+                        listarPedidos();
+                        break;
+                    case 4:
+                        System.out.println("Volver");
+                        break;
+                }
+                break;
+            case 3:
+                System.out.println("Saliendo de la tienda" + shopName + "...");
+                break;
+        }
 
     }
 
-    //region Setters and getters OrderList
+    private void listarPedidos(){
+        for (Order order : orderList) {
+            System.out.println(order.toString());
+        }
+    }
+
     public ArrayList<Order> getOrderList(){
         return orderList;
     }
     public Order getOrderById(int id){
-        for(int i = 0; i<orderList.size(); i++){
-            if(orderList.get(i).getOrderId() == id){
-                return orderList.get(i);
+        for (Order order : orderList) {
+            if (order.getOrderId() == id) {
+                return order;
             }
         }
         return null;
@@ -37,49 +101,14 @@ public class Shop {
     public void addOrder(Order order){
         orderList.add(order);
     }
-    //endregion
 
-    //region Setters and getters UserList
-    public ArrayList<User> getUserList(){
-        return userList;
-    }
-    public User getUserById(String id){
-        for(int i = 0; i<userList.size(); i++){
-            if(userList.get(i).getUserId() == id){
-                return userList.get(i);
-            }
-        }
-        return null;
-    }
-    public User getUserByUsername(String username){
-        for(int i = 0; i<userList.size(); i++){
-            if(userList.get(i).getUsername() == username){
-                return userList.get(i);
-            }
-        }
-        return null;
-    }
-    public void setUserById(String id, User newUser){
-        for(int i = 0; i<userList.size(); i++){
-            if(userList.get(i).getUserId() == id){
-                userList.set(i, newUser);
-            }
-        }
-    }
-    public void addUser(User user){
-        userList.add(user);
-    }
-
-    //endregion
-
-    //region Setters and getters ProductList
     public ArrayList<GenericProduct> getProductList(){
         return productList;
     }
     public GenericProduct getProductById(int id){
-        for(int i = 0; i<productList.size(); i++){
-            if(productList.get(i).getProductId() == id){
-                return productList.get(i);
+        for (GenericProduct genericProduct : productList) {
+            if (genericProduct.getProductId() == id) {
+                return genericProduct;
             }
         }
         return null;
@@ -94,7 +123,32 @@ public class Shop {
     public void addProduct(GenericProduct product){
         productList.add(product);
     }
-    //endregion
 
 
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    @Override
+    public String toString() {
+        int orderCount = 0;
+        for (Order order : orderList) {
+            orderCount++;
+        }
+
+        int productCount = 0;
+        for (GenericProduct genericProduct : productList) {
+            productCount++;
+        }
+
+        return "Shop{" +
+                "shopName='" + shopName + '\'' +
+                ", orderCount=" + orderCount +
+                ", productCount=" + productCount +
+                '}';
+    }
 }

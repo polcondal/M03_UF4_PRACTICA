@@ -1,9 +1,11 @@
 package interfaces;
 
 public interface UserAccount {
-    public void createAccount();
+    void createAccount();
 
-    public void removeAccount();
 
-    public void modifyAccount();
+    void modifyAccount();
+
+    void userMenu();
+
 }
