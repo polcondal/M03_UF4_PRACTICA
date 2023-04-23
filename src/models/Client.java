@@ -1,13 +1,10 @@
 package models;
 
-import interfaces.UserAccount;
-import utils.Utilities;
-
 import java.util.ArrayList;
 
 
 
-public abstract class Client extends User implements UserAccount{
+public abstract class Client extends User{
     private int phoneNumber;
     private String email;
     private String address;
@@ -46,25 +43,15 @@ public abstract class Client extends User implements UserAccount{
     }
 
 
+    public void addOrder(Order order){
+        clientOrders.add(order);
+    }
+
     public void showOrders(){
         for (Order order : this.clientOrders) {
             System.out.println(order);
         }
     }
 
-    @Override
-    public void createAccount() {
-        // TODO: MIRAR SI REALMENTE ES UN MAIL Y QUE NO EXISTA YA EN LA LISTA DE USUARIOS
-        this.setEmail(Utilities.leerMail("Introduce tu email: "));
-
-        this.setAddress(Utilities.leerFrase("Introduce tu dirección: ", 8));
-        this.setPhoneNumber(Utilities.leerInt("Introduce tu número de teléfono: ", 100000000, 999999999));
-    }
-
-
-    @Override
-    public void modifyAccount() {
-
-    }
 
 }

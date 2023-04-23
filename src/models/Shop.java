@@ -1,5 +1,6 @@
 package models;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import utils.Utilities;
 
@@ -7,12 +8,14 @@ public class Shop {
     private String shopName;
     private ArrayList<Order> orderList;
     private ArrayList<GenericProduct> productList;
+    private ArrayList<User> userList;
 
     //constructor directo defaultData
-    public Shop( String shopName, ArrayList<Order> orderList, ArrayList<GenericProduct> productList){
+    public Shop( String shopName, ArrayList<Order> orderList, ArrayList<GenericProduct> productList, ArrayList<User> userList){
         this.shopName = shopName;
         this.orderList = orderList;
         this.productList = productList;
+        this.userList = userList;
     }
 
     //constructor para el usuario
@@ -20,110 +23,8 @@ public class Shop {
         this.shopName = shopName;
         orderList = new ArrayList<Order>();
         productList = new ArrayList<GenericProduct>();
+        userList = new ArrayList<User>();
     }
-
-    public void shopSubMenu(){
-        System.out.println("Welcome to " + shopName + "!" + "\n" +
-                "1. Gestionar Productos \n" +
-                "2. Gestionar Pedidos \n" +
-                "3. Volver");
-        int option = Utilities.leerInt("Introduce una opción: ", 1, 3);
-        int suboption = 0;
-        switch (option){
-            case 1:
-                System.out.println("Gestionar Productos");
-                System.out.println("1. Añadir Producto \n" +
-                        "2. Eliminar Producto \n" +
-                        "3. Listar Productos \n" +
-                        "4. Volver");
-                suboption = Utilities.leerInt("Introduce una opción: ", 1, 4);
-                break;
-            case 2:
-                System.out.println("Gestionar Pedidos");
-                System.out.println("1. Añadir Pedido \n" +
-                        "2. Eliminar Pedido \n" +
-                        "3. Listar Pedidos \n" +
-                        "4. Volver");
-                suboption = Utilities.leerInt("Introduce una opción: ", 1, 4);
-
-                switch (suboption){
-                    case 1:
-                        System.out.println("Añadir Pedido");
-                        int productId = Utilities.leerInt("Introduce el ID del producto: ", 1, productList.size());
-                        int quantity = Utilities.leerInt("Introduce la cantidad: ", 1, 100);
-                        // orderList.add(new Order(quantity));
-                        break;
-                    case 2:
-                        System.out.println("Eliminar Pedido");
-                        listarPedidos();
-                        this.orderList.remove(Utilities.leerInt("Introduce el ID del pedido: ", 1, orderList.size()));
-                        break;
-                    case 3:
-                        System.out.println("Listar Pedidos");
-                        listarPedidos();
-                        break;
-                    case 4:
-                        System.out.println("Volver");
-                        break;
-                }
-                break;
-            case 3:
-                System.out.println("Saliendo de la tienda" + shopName + "...");
-                break;
-        }
-
-    }
-
-    private void listarPedidos(){
-        for (Order order : orderList) {
-            System.out.println(order.toString());
-        }
-    }
-
-    public ArrayList<Order> getOrderList(){
-        return orderList;
-    }
-    public Order getOrderById(int id){
-        for (Order order : orderList) {
-            if (order.getOrderId() == id) {
-                return order;
-            }
-        }
-        return null;
-    }
-    public void setOrderById(int id, Order newOrder){
-        for(int i = 0; i<orderList.size(); i++){
-            if(orderList.get(i).getOrderId() == id){
-                orderList.set(i, newOrder);
-            }
-        }
-    }
-    public void addOrder(Order order){
-        orderList.add(order);
-    }
-
-    public ArrayList<GenericProduct> getProductList(){
-        return productList;
-    }
-    public GenericProduct getProductById(int id){
-        for (GenericProduct genericProduct : productList) {
-            if (genericProduct.getProductId() == id) {
-                return genericProduct;
-            }
-        }
-        return null;
-    }
-    public void setProductById(int id, GenericProduct newProduct){
-        for(int i = 0; i<productList.size(); i++){
-            if(productList.get(i).getProductId() == id){
-                productList.set(i, newProduct);
-            }
-        }
-    }
-    public void addProduct(GenericProduct product){
-        productList.add(product);
-    }
-
 
     public String getShopName() {
         return shopName;
@@ -131,6 +32,150 @@ public class Shop {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
+    }
+
+    public ArrayList<Order> getOrderList() {
+        return orderList;
+    }
+
+    public void setOrderList(ArrayList<Order> orderList) {
+        this.orderList = orderList;
+    }
+
+    public ArrayList<GenericProduct> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(ArrayList<GenericProduct> productList) {
+        this.productList = productList;
+    }
+
+    public ArrayList<User> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(ArrayList<User> userList) {
+        this.userList = userList;
+    }
+
+    public boolean doesUserExist(String username) {
+        for (User user : userList) {
+            if (user.getUsername().equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean doesUserExist(String username, String email) {
+        for (User user : userList) {
+            //TEST
+            if (user instanceof Client && user.getUsername().equals(username) && ((Client) user).getEmail().equals(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isPasswordCorrect(String password, User user) {
+        return user.getPassword().equals(password);
+    }
+
+    public User getUserByUsername(String username) {
+        for (User user : userList) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public boolean tryRemoveAccount(User user) {
+        boolean isSure = Utilities.leerBoolean("¿Estás seguro de que quieres eliminar tu cuenta?");
+        if (isSure) {
+            removeUser(user);
+            System.out.println("USUARIO BORRADO!");
+        }
+        return isSure;
+    }
+
+    public boolean tryRemoveProduct(Supplier supplier, String productName){
+        for (GenericProduct product:productList) {
+            if (product.getProductName().equals(productName) && product.getSupplierName().equals(supplier.getSupplierName())){
+                productList.remove(product);
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    public void addProduct(GenericProduct product){
+        productList.add(product);
+    }
+
+    public void showProductList(){
+        System.out.println("------------------LISTA DE PRODUCTOS------------------");
+        for (GenericProduct product: productList) {
+            System.out.println(product.toString());
+        }
+    }
+
+    public float CalculateBill(int productId, boolean isEnterprise, int quantity){
+        GenericProduct product = isProductBuyable(productId, quantity);
+        if(product != null){
+            return calculatePrice(product, isEnterprise, quantity);
+        }else{
+            return 0.0f;
+        }
+
+
+    }
+
+
+    public Order BuyProduct(int productId, boolean isEnterprise, int quantity){
+        GenericProduct product = isProductBuyable(productId, quantity);
+        updateProductStock(product, quantity);
+        Order order = new Order(product, LocalDate.now(), LocalDate.now().plusDays(7));
+        return order;
+    }
+
+
+    public float calculatePrice(GenericProduct product, boolean isEnterprise, int quantity){
+        float subtotal = product.getPrice()*quantity;
+        float total = subtotal * 1.15f;
+        if (isEnterprise){
+            total *= 0.90f;
+        }
+        return total;
+    }
+
+    public GenericProduct isProductBuyable(int productId, int newQuantity){
+        for (GenericProduct product: productList) {
+            if (product.getProductId()==productId){
+                if (product.getStock()>= newQuantity){
+                    return product;
+                }
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public void updateProductStock(GenericProduct product, int newQuantity){
+            product.setStock(product.getStock()-newQuantity);
+    }
+
+    public void addUser(User user) {
+        userList.add(user);
+    }
+
+    public void removeUser(User user) {
+        userList.remove(user);
+    }
+
+    public int countUsers() {
+        return userList.size();
     }
 
     @Override
@@ -145,10 +190,16 @@ public class Shop {
             productCount++;
         }
 
+        int userCount = 0;
+        for (User user : userList) {
+            userCount++;
+        }
+
         return "Shop{" +
                 "shopName='" + shopName + '\'' +
                 ", orderCount=" + orderCount +
                 ", productCount=" + productCount +
+                ", userCount=" + userCount +
                 '}';
     }
 }
