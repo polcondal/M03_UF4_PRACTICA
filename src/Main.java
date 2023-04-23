@@ -4,11 +4,15 @@ import utils.Utilities;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class Main {
 
+    public static Shop shop;
+
     public static void main(String[] args) {
+        shop = new Shop("POL&NAHO's");
         addDefaultData();
         entryMenu();
     }
@@ -26,34 +30,11 @@ public class Main {
                     1, 3);
             switch (selection) {
                 case 1:
-                    System.out.println("---------- Menu de Log In ----------");
-
-
-                    do {
-                        String username = Utilities.leerPalabra("Introduce tu nombre de usuario: ");
-                        user = UserList.getUserByUsername(username);
-                        if (user == null) {
-                            System.out.println("El usuario introducido no existe, vuelve a introducirlo");
-                        }
-                    } while (user == null);
-
-                    String password;
-                    do {
-                        password = Utilities.leerPalabra("Introduce tu contraseña: ");
-                        if (!UserList.isPasswordCorrect(password, user)) {
-                            System.out.println("La contraseña introducida no es correcta, vuelve a introducirla");
-                        }
-                    } while (!UserList.isPasswordCorrect(password, user));
-
-                    // TODO: IMPLEMENTAR MENUS AFTER LOGIN
-                    System.out.println("Logeado correctamente");
-                    loadUserMenu(user);
+                    user = loginMenu();
                     break;
 
                 case 2:
-                    System.out.println("Ya existen " + UserList.countUsers() + " usuarios registrados, a qué esperas?...");
-                    System.out.println("---------- Menú de registro ----------");
-                    signUpSubMenu(user);
+                    user = signUpSubMenu();
                     break;
 
                 case 3:
@@ -66,12 +47,48 @@ public class Main {
         }
     }
 
-    private static void signUpSubMenu(User newUser) {
+    private static User loginMenu(){
+        System.out.println("---------- Menu de Log In ----------");
+        User user = null;
+
+        do {
+            String username = Utilities.leerPalabra("Introduce tu nombre de usuario: ");
+            user = shop.getUserByUsername(username);
+            if (username.equals("EXIT")) {
+                return null;
+            }else if (user == null) {
+                System.out.println("El usuario introducido no existe, vuelve a introducirlo o escribe EXIT en caso de querer salir");
+            }
+        } while (user == null);
+
+        String password;
+        do {
+            password = Utilities.leerPalabra("Introduce tu contraseña: ");
+             if (password.equals("EXIT")) {
+                return null;
+            }else if (!shop.isPasswordCorrect(password, user)) {
+                System.out.println("La contraseña introducida no es correcta, vuelve a introducirla o escribe EXIT en caso de querer salir");
+            }
+        } while (!shop.isPasswordCorrect(password, user));
+
+        System.out.println("Logeado correctamente");
+        loadUserMenu(user);
+
+        return user;
+    }
+
+    private static User signUpSubMenu() {
         String username;
+        System.out.println("Ya existen " + shop.countUsers() + " usuarios registrados, a qué esperas?...");
+        System.out.println("---------- Menú de registro ----------");
+
+        User newUser = null;
         do {
             username = Utilities.leerPalabra("Introduce tu nombre de usuario: ");
-            newUser = UserList.getUserByUsername(username);
-            if (newUser != null) {
+            newUser = shop.getUserByUsername(username);
+            if (username.equals("EXIT")) {
+                return null;
+            }else if (newUser != null) {
                 System.out.println("El usuario introducido ya existe, vuelve a introducirlo");
             }
         } while (newUser != null);
@@ -81,7 +98,9 @@ public class Main {
         do {
             password1 = Utilities.leerPalabra("Introduce tu contraseña: ");
             password2 = Utilities.leerPalabra("Repite tu contraseña: ");
-            if (!password2.equals(password1)) {
+            if (password1.equals("EXIT")) {
+                return null;
+            }else if (!password2.equals(password1)) {
                 System.out.println("Las dos contraseñas introducidas tienen que ser iguales, vuelve a repetir");
             }
         } while (!password2.equals(password1));
@@ -90,33 +109,58 @@ public class Main {
                 1, 3);
 
         // inicializamos el usuario genérico según el tipo de usuario que sea
-
         switch (userType) {
+
             // individual
             case 1:
-                //TODO: TEST
-                newUser = new Individual(username, password1);
-                ((Individual)newUser).createAccount();
+                String fullName = Utilities.leerFrase("Introduce tu nombre completo: ", 8);
+                int day = Utilities.leerInt("Introduce tu día de nacimiento: ", 1, 31);
+                int month = Utilities.leerInt("Introduce tu mes de nacimiento: ", 1, 12);
+                int year = Utilities.leerInt("Introduce tu año de nacimiento: ", 1900, 2023);
+
+                LocalDate birthDate = LocalDate.of(year, month, day);
+                newUser = new Individual(
+                        username,
+                        password1,
+                        fullName,
+                        birthDate,
+                        Utilities.leerInt("Introduce tu numero de telefono: ", 0 , 999999999),
+                        Utilities.leerMail("Introduce tu e-mail: "),
+                        Utilities.leerFrase("Intoduce tu dirección: "),
+                        new ArrayList<Order>());
+                shop.addUser(newUser);
                 break;
+
             // empresa
             case 2:
-                //TODO: TEST
                 //el cif se le pide al instante de crear cuenta ya que no se puede modificar
                 final String CIF = Utilities.leerPalabra("Introduce tu CIF: \n" +
                         "ADVERTENCIA: EL CIF NO SE PUEDE MODIFICAR DESPUES DE CREAR LA CUENTA", 9);
-                newUser = new Enterprise(username, password1, CIF);
-                ((Enterprise)newUser).createAccount();
+                String enterpriseName = Utilities.leerFrase("Introduce el nombre de la empresa: ", 8);
+
+                newUser = new Enterprise(
+                        username,
+                        password1,
+                        CIF,
+                        enterpriseName,
+                        Utilities.leerInt("Introduce tu numero de telefono: ", 0 , 999999999),
+                        Utilities.leerMail("Introduce tu e-mail: "),
+                        Utilities.leerFrase("Intoduce tu dirección: "),
+                        new ArrayList<Order>());
+
+                shop.addUser(newUser);
                 break;
+
             // proveedor
             case 3:
-                //TODO: TEST
-                newUser = new Supplier(username, password1);
-                ((Supplier)newUser).createAccount();
+                String supplierName = Utilities.leerPalabra("Introduce nombre de supplier.");
+
+                newUser = new Supplier(username, password1, supplierName);
+                shop.addUser(newUser);
                 break;
             default:
                 break;
         }
-        addUserToList(newUser);
         System.out.println("Felicidades!!! " + newUser.getUsername()+ ", ya formas parte de nuestra familia como " + newUser.getClass().getSimpleName() + "!");
 
         System.out.println("\n Quieres utilizar la cuenta que acabas de crear? \n 1. Sí \n 2. No");
@@ -124,160 +168,398 @@ public class Main {
         if (selection == 1) {
             loadUserMenu(newUser);
         }
+        return newUser;
     }
 
-    // TODO: FALTAN FUNCIONES A APLICAR
-    private static void individualMenu() {
-        byte selection = 0;
+    private static void individualMenu(Individual user) {
+        int option  = 0;
 
-        while (selection != 1) {
-            selection = (byte) Utilities.leerInt(
-                    "Elige una de las siguientes opciones: \n 1. Salir de la sesion \n 2. Listar productos \n 3. Comprar producto \n 4. Modificar usuario",
-                    1, 5);
-            switch (selection) {
+        while(option!=7){
+            System.out.println("Bienvenido al menú de Individual: " + user.getUsername() + "\n" +
+                    "1. Ver datos de la cuenta" + "\n" +
+                    "2. Modificar datos de la cuenta" + "\n" +
+                    "3. Ver pedidos" + "\n" +
+                    "4. Eliminar cuenta" + "\n" +
+                    "5. Observar productos de la tienda" + "\n" +
+                    "6. Comprar producto" + "\n" +
+                    "7. Salir");
+            option = Utilities.leerInt("Introduce una opción: ", 1, 7);
+            switch (option) {
                 case 1:
-                    System.out.println("Saliendo de la sesión...");
+                    System.out.println(user.toString());
                     break;
                 case 2:
-                    System.out.println("Listando productos");
+                    modifyIndividualAccount(user);
                     break;
                 case 3:
-                    System.out.println("Comprando producto");
+                    user.showOrders();
                     break;
                 case 4:
-                    System.out.println("Modificando usuario");
+                    boolean isSure = shop.tryRemoveAccount(user);
+                    if(isSure){
+                        return;
+                    }
+                    break;
+                case 5:
+                    shop.showProductList();
+                    break;
+                case 6:
+                    int productid = Utilities.leerInt("Que productId tiene el producto que quieres comprar? ", 0 ,999999999);
+                    int quantity = Utilities.leerInt("Que cantidad quieres del producto? ", 1 ,999999999);
+
+                    float presupuesto = shop.CalculateBill(productid, false, quantity);
+                    if(presupuesto == 0.0f){
+                        System.out.println("NO SE HA ENCONTRADO EL PRODUCTO QUE DESEAS");
+                        break;
+                    }
+                    boolean keepGoing = Utilities.leerBoolean("El presupuesto por esta acción sera de "+ presupuesto +"€ ¿Estás seguro de que quieres eliminar tu cuenta?");
+                    if (keepGoing) {
+                        user.addOrder(shop.BuyProduct(productid, false, quantity));
+                    }else{
+                        System.out.printf("Se ha cancelado la compra!");
+                    }
+                    break;
+                case 7:
+                    System.out.println("Saliendo...");
                     break;
             }
         }
     }
 
-    // TODO: MODIFICAR INPUTS Y ACCIONES DE ESTOS MENUS, PRIMERO QUE FUNCIONE EN
-    // INDIVIDUAL
-    private static void businessMenu() {
-        byte selection = 0;
+    public static void modifyIndividualAccount(Individual user) {
+        System.out.println("¿Qué quieres modificar de tu cuenta de Individual?" + "\n" +
+                "1. Nombre de usuario" + "\n" +
+                "2. Contraseña" + "\n" +
+                "3. Nombre completo" + "\n" +
+                "4. Fecha de nacimiento" + "\n" +
+                "5. Email" + "\n" +
+                "6. Dirección" + "\n" +
+                "7. Teléfono" + "\n" +
+                "8. Salir");
+        int option = Utilities.leerInt("Introduce una opción: ", 1, 8);
+        switch (option) {
+            case 1:
+                user.setUsername(Utilities.leerFrase("Introduce el nuevo nombre de usuario: ", 3));
+                break;
+            case 2:
+                user.ChangePassword();
+                break;
+            case 3:
+                user.setFullName(Utilities.leerFrase("Introduce el nuevo nombre completo: ", 8));
+                break;
+            case 4:
+                int day = Utilities.leerInt("Introduce tu día de nacimiento: ", 1, 31);
+                int month = Utilities.leerInt("Introduce tu mes de nacimiento: ", 1, 12);
+                int year = Utilities.leerInt("Introduce tu año de nacimiento: ", 1900, 2023);
+                user.setBirthDate(LocalDate.of(year, month, day));
+                break;
+            case 5:
+                boolean emailExists = true;
+                do {
+                    user.setEmail(Utilities.leerFrase("Introduce el nuevo email: ", 8));
+                    if (shop.doesUserExist(user.getUsername(), user.getEmail())) {
+                        System.out.println("El email ya existe, introduce otro.");
+                    } else {
+                        emailExists = false;
+                    }
+                } while (emailExists);
+                break;
+            case 6:
+                user.setAddress(Utilities.leerFrase("Introduce la nueva dirección: ", 8));
+                break;
+            case 7:
+                user.setPhoneNumber(Utilities.leerInt("Introduce el nuevo teléfono: ", 100000000, 999999999));
+                break;
+            case 8:
+                System.out.println("Saliendo de la sesión...");
+                break;
+        }
+    }
 
-        while (selection != 1) {
-            System.out.println("・・・・・・・・・・・・・・❥✿ BIENVENIDE ❥✿・・・・・・・・・・・・・・");
-            selection = (byte)Utilities.leerInt(
-                    "Elige una de las siguientes opciones: \n 1. Log in cliente \n 2. Log in empresa \n 3. Log in vendedor",
-                    1, 5);
-            switch (selection) {
+    private static void enterpriseMenu(Enterprise user) {
+        int option  = 0;
+
+        while(option!=7) {
+            System.out.println("Bienvenido al menú de Empresa " + user.getUsername());
+            System.out.println("1. Ver mis datos");
+            System.out.println("2. Modificar mis datos");
+            System.out.println("3. Eliminar mi cuenta");
+            System.out.println("4. Ver mis orders");
+            System.out.println("5. Observar productos de la tienda");
+            System.out.println("6. Comprar producto");
+            System.out.println("7. Salir");
+            option = Utilities.leerInt("Introduce una opción: ", 1, 7);
+            switch (option) {
                 case 1:
-                    System.out.println("Saliendo de la aplicación...");
+                    System.out.println(user.toString());
                     break;
                 case 2:
-                    System.out.println("Log In");
+                    modifyEnterpriseAccount(user);
                     break;
                 case 3:
-                    System.out.println("Sign Up");
+                    boolean isSure = shop.tryRemoveAccount(user);
+                    if(isSure){
+                        return;
+                    }
+                    break;
+                case 4:
+                    user.showOrders();
+                    break;
+                case 5:
+                    shop.showProductList();
+                    break;
+                case 6:
+                    int productid = Utilities.leerInt("Que productId tiene el producto que quieres comprar? ", 0 ,999999999);
+                    int quantity = Utilities.leerInt("Que cantidad quieres del producto? ", 1 ,999999999);
+
+                    float presupuesto = shop.CalculateBill(productid, true, quantity);
+                    if(presupuesto == 0.0f){
+                        System.out.println("NO SE HA ENCONTRADO EL PRODUCTO QUE DESEAS");
+                        break;
+                    }
+                    boolean keepGoing = Utilities.leerBoolean("El presupuesto por esta acción sera de "+ presupuesto +"€ ¿Estás seguro de que quieres eliminar tu cuenta?");
+                    if (keepGoing) {
+                        user.addOrder(shop.BuyProduct(productid, true, quantity));
+                    }else{
+                        System.out.printf("Se ha cancelado la compra!");
+                    }
+                    break;
+                case 7:
+                    System.out.println("Saliendo...");
                     break;
             }
         }
     }
 
-    private static void supplierMenu() {
-        int selection = Integer.MAX_VALUE;
+    public static void modifyEnterpriseAccount(Enterprise enterprise) {
+        System.out.println("¿Qué quieres modificar de tu cuenta de Enterprise?" + "\n" +
+                "1. Nombre de usuario" + "\n" +
+                "2. Contraseña" + "\n" +
+                "3. Nombre de la empresa" + "\n" +
+                "4. Email" + "\n" +
+                "5. Dirección" + "\n" +
+                "6. Teléfono" + "\n" +
+                "7. Salir");
+        int option = Utilities.leerInt("Introduce una opción: ", 1, 7);
+        switch (option) {
+            case 1:
+                enterprise.setUsername(Utilities.leerFrase("Introduce el nuevo nombre de usuario: ", 3));
+                break;
+            case 2:
+                enterprise.ChangePassword();
+                break;
+            case 3:
+                enterprise.setEnterpriseName(Utilities.leerFrase("Introduce el nuevo nombre de la empresa: ", 8));
+                break;
+            case 4:
+                enterprise.setEmail(Utilities.leerFrase("Introduce el nuevo email: ", 8));
+                break;
+            case 5:
+                enterprise.setAddress(Utilities.leerFrase("Introduce la nueva dirección: ", 8));
+                break;
+            case 6:
+                enterprise.setPhoneNumber(Utilities.leerInt("Introduce el nuevo teléfono: ", 100000000, 999999999));
+                break;
+            case 7:
+                System.out.println("Saliendo de la sesión...");
+                break;
+        }
+    }
 
-        while (selection != 1) {
-            System.out.println("・・・・・・・・・・・・・・❥✿ BIENVENIDE ❥✿・・・・・・・・・・・・・・");
-            selection = Utilities.leerInt(
-                    "Elige una de las siguientes opciones: \n 1. Log in cliente \n 2. Log in empresa \n 3. Log in vendedor",
+
+    private static void supplierMenu(Supplier user) {
+        int option  = 0;
+
+        while(option!=5){
+            int opcio = Utilities.leerInt("BEINVENIDE AL MENÚ SUPPLIER " + user.getSupplierName() +
+                            "\n Elige una opción: " + "\n" +
+                            " 1. Añadir producto en Tienda" + "\n" +
+                            " 2. Eliminar producto de Tienda" + "\n" +
+                            " 3. Modificar Cuenta " + "\n" +
+                            " 4. Eliminar Cuenta" + "\n" +
+                            " 5. Log Out",
                     1, 5);
-            switch (selection) {
+
+            switch (opcio) {
                 case 1:
-                    System.out.println("Saliendo de la aplicación...");
+                    System.out.println("Añadiendo producto en Tienda");
+                    String productType = "";
+                    while(productType!= "Ropa"|| productType!= "Alimento" || productType!= "Tecnologia"){
+                        productType = Utilities.leerPalabra("Que tipo de producto quieres añadir? \n -Ropa \n -Alimento \n -Tecnologia");
+                    }
+
+                    if(productType.equals("Ropa")){
+
+                        GenericProduct product = new Clothing(
+                                user.getSupplierName(),
+                                Utilities.leerFrase("Introduce como se llama el producto: "),
+                                Utilities.leerFloat("Introduce el precio del producto: ", 0.00f, 100000000000000f),
+                                Utilities.leerInt("Introduce cuantas unidades quieres añaddir de este producto", 1, 100000000),
+                                Utilities.leerFrase("Introduce la marca del producto: "),
+                                chooseClothingMaterials(),
+                                chooseClothingSize()
+                        );
+
+                        shop.addProduct(product);
+
+                    }else if(productType.equals("Alimento")){
+                        GenericProduct product = new Edible(
+                                user.getSupplierName(),
+                                Utilities.leerFrase("Introduce como se llama el producto: "),
+                                Utilities.leerFloat("Introduce el precio del producto: ", 0.00f, 100000000000000f),
+                                Utilities.leerInt("Introduce cuantas unidades quieres añaddir de este producto", 1, 100000000),
+                                Utilities.leerFrase("Introduce la marca del producto: "),
+                                Utilities.leerFrase("Describe los porcentajes de lo que contenga el alimento: ")
+                        );
+                        shop.addProduct(product);
+
+                    }else if(productType.equals("Tecnologia")){
+                        GenericProduct product = new Technology(
+                                user.getSupplierName(),
+                                Utilities.leerFrase("Introduce como se llama el producto: "),
+                                Utilities.leerFloat("Introduce el precio del producto: ", 0.00f, 100000000000000f),
+                                Utilities.leerInt("Introduce cuantas unidades quieres añaddir de este producto", 1, 100000000),
+                                Utilities.leerFrase("Introduce la marca del producto: "),
+                                Utilities.leerFrase("Introduce el codigo de serie del modelo: ")
+                        );
+                        shop.addProduct(product);
+
+                    }
                     break;
                 case 2:
-                    System.out.println("Log In");
+                    System.out.println("Eliminando producto de Tienda");
+                    boolean succes = shop.tryRemoveProduct(user, Utilities.leerFrase("Introduce el nombre del producto a eliminar: "));
+                    if(succes){
+                        System.out.println("Se ha eliminado el producto de nuestra base de datos");
+                    }else{
+                        System.out.println("No se ha encontrado el producto en nuestra base de datos");
+                    }
                     break;
                 case 3:
-                    System.out.println("Sign Up");
+                    modifySupplierAccount(user);
+                    break;
+                case 4:
+                    boolean isSure = shop.tryRemoveAccount(user);
+                    if(isSure){
+                        return;
+                    }
+                    break;
+                case 5:
+                    System.out.println("Saliendo de la sesión...");
                     break;
             }
         }
     }
 
+    public static void modifySupplierAccount(Supplier supplier) {
+        System.out.println("¿Qué quieres modificar de tu cuenta de Supplier?" + "\n" +
+                "1. Nombre de usuario" + "\n" +
+                "2. Contraseña" + "\n" +
+                "3. Nombre de la empresa" + "\n" +
+                "4. Volver");
+        int option = Utilities.leerInt("Introduce una opción: ", 1, 7);
+        switch (option) {
+            case 1:
+                supplier.setUsername(Utilities.leerFrase("Introduce el nuevo nombre de usuario: ", 3));
+                System.out.println("Nombre de usuario cambiado correctamente a " + supplier.getUsername());
+                break;
+            case 2:
+                supplier.ChangePassword();
+                System.out.println("Contraseña cambiada correctamente");
+                break;
+            case 3:
+                supplier.setSupplierName(Utilities.leerFrase("Introduce el nuevo nombre de la empresa: ", 4));
+                System.out.println("Nombre de la empresa cambiado correctamente a " + supplier.getSupplierName());
+                break;
+            case 4:
+                System.out.println("Volviendo...");
+                break;
+        }
+    }
+
+    private static ClothingMaterials chooseClothingMaterials(){
+        System.out.println("De que material esta principalmente hecha esta pieza de ropa? ");
+        for (ClothingMaterials materials : ClothingMaterials.values()) {
+            System.out.println("- " + materials.name());
+        }
+        Scanner scanner = new Scanner(System.in);
+        ClothingMaterials seleccion = null;
+        while (seleccion == null) {
+            try {
+                String input = scanner.nextLine().toUpperCase();
+                seleccion = ClothingMaterials.valueOf(input);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Selección inválida. Intente de nuevo.");
+            }
+        }
+        return seleccion;
+    }
+    private static ClothingSizes chooseClothingSize(){
+        System.out.println("De que material esta principalmente hecha esta pieza de ropa? ");
+        for (ClothingSizes clothingSize : ClothingSizes.values()) {
+            System.out.println("- " + clothingSize.name());
+        }
+        Scanner scanner = new Scanner(System.in);
+        ClothingSizes seleccion = null;
+        while (seleccion == null) {
+            try {
+                String input = scanner.nextLine().toUpperCase();
+                seleccion = ClothingSizes.valueOf(input);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Selección inválida. Intente de nuevo.");
+            }
+        }
+        return seleccion;
+    }
     private static void loadUserMenu(User user){
         switch (user.getClass().getSimpleName()){
             case "Individual":
-                ((Individual)user).userMenu();
+                individualMenu((Individual) user);
                 break;
             case "Enterprise":
-                ((Enterprise)user).userMenu();
+                enterpriseMenu((Enterprise) user);
                 break;
             case "Supplier":
-                ((Supplier)user).userMenu();
+                supplierMenu((Supplier)user);
                 break;
         }
     }
 
+
     private static void addDefaultData(){
+        shop.addUser(new Individual(
+                "pepe",
+                "pepe1",
+                "pepe pepe",
+                LocalDate.of(2002, 12, 21),
+                617282920,
+                "pepe@pepe.com",
+                "calle pepe",
+                new ArrayList<Order>()));
+        shop.addUser(new Enterprise(
+                "HolaSA",
+                "1234",
+                "54577432",
+                "EmpresasHolaSA",
+                617111252,
+                "empresa1@mail.com",
+                "calle falsa 123",
+                new ArrayList<Order>()));
 
-        ProductList.addProduct(new Clothing("Default Supplier S.A", "Camiseta de manga corta", 10.99f, 200, "N/A", ClothingMaterials.POLYESTER, ClothingSizes.M));
-        ProductList.addProduct(new Technology("Default Supplier S.A", "Portatil ThinkPad x56", 556.59f, 5,"Lenovo", 218741121));
-        ProductList.addProduct(new Edible("Default Supplier S.A", "Manzana", 0.75f, 100, "Hacendado",  EdibleCategory.FRUIT));
-        ProductList.addProduct(new Clothing("Default Supplier S.A", "Camiseta de manga larga", 12.99f, 200, "N/A", ClothingMaterials.COTTON, ClothingSizes.L));
-        ProductList.addProduct(new Technology("Default Supplier S.A", "Asus Rog Strix G", 899.99f, 2,"Asus", 213015812));
+        shop.addUser(new Supplier(
+                "HolaSA",
+                "1234",
+                "54577432"));
 
 
+        shop.getProductList().add(new Clothing("HolaSA", "Camiseta de manga corta", 10.99f, 200, "N/A", ClothingMaterials.POLYESTER, ClothingSizes.M));
+        shop.getProductList().add(new Technology("HolaSA", "Portatil ThinkPad x56", 556.59f, 5,"Lenovo", "2187A41121"));
+        shop.getProductList().add(new Edible("Default Supplier S.A", "Manzana", 0.75f, 100, "Hacendado",  "100% Manzana natural"));
+        shop.getProductList().add(new Clothing("Default Supplier S.A", "Camiseta de manga larga", 12.99f, 200, "N/A", ClothingMaterials.COTTON, ClothingSizes.L));
+        shop.getProductList().add(new Technology("HolaSA", "Asus Rog Strix G", 899.99f, 2,"Asus", "213015812A"));
 
 
-        //
-        ArrayList<Order> individualUnoOrders = new ArrayList<Order>();
-        individualUnoOrders.add(new Order(null, LocalDate.now(), LocalDate.of(2023, 5, 1)));
-        ArrayList<Order> individualDosOrders = new ArrayList<Order>();
-
-
-
-        UserList.addUser(new Individual("Pepe123", "1234", "pepe perez", LocalDate.of(1920,01,31), 617111252, "pepe@gmail.com", "calle falsa 123", individualUnoOrders));
-
-        UserList.addUser(new Individual("Pepe123", "1234", "pepe perez", LocalDate.of(1920,01,31), 617111252, "pepe@gmail.com", "calle falsa 123", individualUnoOrders));
-
-
-        ArrayList<Order> EnterpriseUnoOrders = new ArrayList<Order>();
-        UserList.addUser(new Enterprise("HolaSA", "1234", "54577432", "EmpresasHolaSA", 617111252, "empresa1@mail.com", "calle falsa 123", EnterpriseUnoOrders));
-
-
-        // SUPPLIER MERCADONA ------------------------
-        // declaramos los arrays de tiendas y pedidos
-        ArrayList<Shop> mercadonaShops = new ArrayList<Shop>();
-        ArrayList<Order> mercadonaOrders = new ArrayList<Order>();
-
-        //pedido 1
-        ArrayList<GenericProduct> order1Products = new ArrayList<GenericProduct>();
-        order1Products.add(new Edible("Mercadona", "Huevos", 1.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
-        order1Products.add(new Edible("Mercadona", "Leche", 0.69f, 125, "Hacendado",  EdibleCategory.DAIRY));
-
-        //pedido 2
-        ArrayList<GenericProduct> order2Products = new ArrayList<GenericProduct>();
-        order2Products.add(new Edible("Mercadona", "Yogur", 0.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
-        order2Products.add(new Edible("Mercadona", "Queso", 1.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
-        order2Products.add(new Edible("Mercadona", "Leche", 0.69f, 125, "Hacendado",  EdibleCategory.DAIRY));
-
-        //declaracion de pedidos
-        Order mercadonaOrder1 = new Order( order1Products, LocalDate.now(), LocalDate.of(2023, 5, 1));
-        Order mercadonaOrder2 = new Order( order2Products, LocalDate.now(), LocalDate.of(2023, 5, 1));
-
-        // declaramos el array de productos de la tienda
-        ArrayList<GenericProduct> mercadonaBCNProducts = new ArrayList<GenericProduct>();
-
-        //declaramos la tienda con sus productos
-        Shop mercadonaBCN = new Shop("Mercadona BCN", mercadonaOrders,  mercadonaBCNProducts);
-        mercadonaBCN.addProduct(new Edible("Mercadona", "Huevos", 1.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
-        mercadonaBCN.addProduct(new Edible("Mercadona", "Leche", 0.69f, 125, "Hacendado",  EdibleCategory.DAIRY));
-        mercadonaBCN.addProduct(new Edible("Mercadona", "Yogur", 0.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
-        mercadonaBCN.addProduct(new Edible("Mercadona", "Queso", 1.99f, 100, "Hacendado",  EdibleCategory.DAIRY));
-        mercadonaShops.add(mercadonaBCN);
-
-        //creamos el usuario y añadimos la tienda a la lista de tiendas del supplier
-        User mercadonaUser = new Supplier("mercadonaadmin", "1234", "Mercadona", mercadonaShops);
-        UserList.addUser(mercadonaUser);
-        ((Supplier)mercadonaUser).addShop(mercadonaBCN);
 
     }
 
-    private static void addUserToList(User user) {
-        System.out.println("Añadiendo usuario "+ user.toString() +  " a la base de datos...");
-        UserList.addUser(user);
-    }
 }

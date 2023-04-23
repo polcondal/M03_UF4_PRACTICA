@@ -6,11 +6,11 @@ import java.util.ArrayList;
 public class Order {
     private static int orderIdCounter = 0;
     private int orderId;
-    private ArrayList<GenericProduct> products;
+    private GenericProduct products;
     private LocalDate orderCreationDate;
     private LocalDate orderArrivalDate;
 
-    public Order(ArrayList<GenericProduct> products, LocalDate orderCreationDate,
+    public Order(GenericProduct products, LocalDate orderCreationDate,
                  LocalDate orderArrivalDate) {
         orderIdCounter++;
         this.orderId = orderIdCounter;
@@ -26,10 +26,10 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public ArrayList<GenericProduct> getProducts() {
+    public GenericProduct getProducts() {
         return products;
     }
-    public void setProducts(ArrayList<GenericProduct> products) {
+    public void setProducts(GenericProduct products) {
         this.products = products;
     }
 
@@ -49,12 +49,6 @@ public class Order {
 
     @Override
     public String toString() {
-
-        String products = "";
-        for (GenericProduct genericProduct : this.products) {
-            products += genericProduct.toString() + ", ";
-        }
-
 
         return "Order{" +
                 "orderId=" + orderId +

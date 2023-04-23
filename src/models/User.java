@@ -52,14 +52,4 @@ public abstract class User {
         setPassword(newPassword);
     }
 
-    public boolean tryRemoveAccount() {
-        boolean isSure = Utilities.leerBoolean("¿Estás seguro de que quieres eliminar tu cuenta?");
-        if (isSure) {
-            UserList.removeUser(this);
-            //retornamos true para saber que si ha sido eliminado
-            return true;
-        }
-        else return false;
-    }
-
 }
